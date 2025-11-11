@@ -1,6 +1,7 @@
-package app.repository;
+package main.java.app.repository;
 
-import app.domain.Blob;
+import main.java.app.domain.Blob;
+import main.java.app.exception.ErrorCode;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,36 +14,66 @@ import java.util.Objects;
 public final class FileObjectRepository implements ObjectRepository {
     private static final String DOT_JGIT = ".jgit";
     private static final String OBJECTS = "objects";
-    private final Path rootDir;
+    private static final int SHA_PREFIX_LENGTH = 2;
+    private final Path rootDirectoryPath;
 
-    public FileObjectRepository(Path rootDir) {
-        this.rootDir = Objects.requireNonNull(rootDir, "rootDir");
+    public FileObjectRepository(Path rootDirectoryPath) {
+        this.rootDirectoryPath = Objects.requireNonNull(rootDirectoryPath, "rootDirectoryPath");
     }
 
     @Override
     public String writeObject(Blob blob) {
-        byte[] file = blob.file();
-        String sha = sha1Hex(file);
-        Path objectsDir = rootDir.resolve(DOT_JGIT).resolve(OBJECTS);
-        Path dir = objectsDir.resolve(sha.substring(0, 2));
-        Path filePath = dir.resolve(sha.substring(2));
-        try {
-            Files.createDirectories(dir);
-            if (!Files.exists(filePath)) {
-                Files.write(filePath, file);
-            }
-        } catch (IOException ignored) {
-        }
-        return sha;
+        byte[] fileContent = blob.file();
+        String shaHashValue = calculateSha1(fileContent);
+        Path objectFilePath = buildObjectFilePath(shaHashValue);
+        Path objectDirectoryPath = objectFilePath.getParent();
+        createObjectDirectory(objectDirectoryPath);
+        writeObjectFile(objectFilePath, fileContent);
+        return shaHashValue;
     }
 
-    private static String sha1Hex(byte[] bytes) {
+    private String calculateSha1(byte[] fileContent) {
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-            byte[] digest = md.digest(bytes);
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+            byte[] digest = messageDigest.digest(fileContent);
             return HexFormat.of().formatHex(digest);
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-1 not available", e);
+            throw new IllegalStateException(ErrorCode.SHA1_NOT_AVAILABLE.message());
+        }
+    }
+
+    private Path buildObjectFilePath(String shaHashValue) {
+        Path objectsDirectoryPath = rootDirectoryPath.resolve(DOT_JGIT).resolve(OBJECTS);
+        String shaPrefixValue = extractShaPrefix(shaHashValue);
+        String shaSuffixValue = extractShaSuffix(shaHashValue);
+        Path objectSubDirectoryPath = objectsDirectoryPath.resolve(shaPrefixValue);
+        return objectSubDirectoryPath.resolve(shaSuffixValue);
+    }
+
+    private String extractShaPrefix(String shaHashValue) {
+        return shaHashValue.substring(0, SHA_PREFIX_LENGTH);
+    }
+
+    private String extractShaSuffix(String shaHashValue) {
+        return shaHashValue.substring(SHA_PREFIX_LENGTH);
+    }
+
+    private void createObjectDirectory(Path objectDirectoryPath) {
+        try {
+            Files.createDirectories(objectDirectoryPath);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(ErrorCode.OBJECT_DIRECTORY_CREATE_FAILED.message());
+        }
+    }
+
+    private void writeObjectFile(Path objectFilePath, byte[] fileContent) {
+        if (Files.exists(objectFilePath)) {
+            return;
+        }
+        try {
+            Files.write(objectFilePath, fileContent);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(ErrorCode.OBJECT_FILE_WRITE_FAILED.message());
         }
     }
 }
