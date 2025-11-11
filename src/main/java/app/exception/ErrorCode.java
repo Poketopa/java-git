@@ -15,7 +15,9 @@ public enum ErrorCode {
     INDEX_FILE_READ_FAILED("[ERROR] Index 파일 읽기에 실패했습니다."),
     INDEX_FILE_WRITE_FAILED("[ERROR] Index 파일 쓰기에 실패했습니다."),
     OBJECT_DIRECTORY_CREATE_FAILED("[ERROR] 객체 디렉토리 생성에 실패했습니다."),
-    OBJECT_FILE_WRITE_FAILED("[ERROR] 객체 파일 쓰기에 실패했습니다.");
+    OBJECT_FILE_WRITE_FAILED("[ERROR] 객체 파일 쓰기에 실패했습니다."),
+    REPOSITORY_INIT_FAILED("[ERROR] 저장소 초기화에 실패했습니다."),
+    FILE_READ_FAILED("[ERROR] 파일 읽기에 실패했습니다.");
 
     private final String message;
 
