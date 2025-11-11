@@ -1,4 +1,4 @@
-package app.service;
+package main.java.app.service;
 
 public interface InitService {
     void init();
