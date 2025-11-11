@@ -1,6 +1,6 @@
-package main.java.app.repository;
+package app.repository;
 
-import main.java.app.domain.Blob;
+import app.domain.Blob;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,15 +21,15 @@ public final class FileObjectRepository implements ObjectRepository {
 
     @Override
     public String writeObject(Blob blob) {
-        byte[] content = blob.content();
-        String sha = sha1Hex(content);
+        byte[] file = blob.file();
+        String sha = sha1Hex(file);
         Path objectsDir = rootDir.resolve(DOT_JGIT).resolve(OBJECTS);
         Path dir = objectsDir.resolve(sha.substring(0, 2));
-        Path file = dir.resolve(sha.substring(2));
+        Path filePath = dir.resolve(sha.substring(2));
         try {
             Files.createDirectories(dir);
-            if (!Files.exists(file)) {
-                Files.write(file, content);
+            if (!Files.exists(filePath)) {
+                Files.write(filePath, file);
             }
         } catch (IOException ignored) {
         }
