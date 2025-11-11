@@ -30,7 +30,7 @@ public final class AddServiceImpl implements AddService {
             throw new IllegalArgumentException(ErrorCode.EMPTY_PATHS.message());
         }
         Index current = indexRepository.read();
-        Map<String, String> map = new LinkedHashMap<>(current.entries());
+        Map<String, String> map = new LinkedHashMap<>(current.stagedFiles());
         for (String p : paths) {
             Path filePath = rootDir.resolve(p);
             try {

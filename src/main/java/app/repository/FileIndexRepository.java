@@ -1,7 +1,5 @@
 package main.java.app.repository;
 
-import main.java.app.domain.Index;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -10,8 +8,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import main.java.app.domain.Index;
 
-public final class FileIndexRepository implements IndexRepository {
+public final class FileIndexRepository implements app.repository.IndexRepository {
     private static final String DOT_JGIT = ".jgit";
     private static final String INDEX = "index";
     private final Path rootDir;
@@ -50,7 +49,7 @@ public final class FileIndexRepository implements IndexRepository {
         try {
             Files.createDirectories(dot);
             StringBuilder sb = new StringBuilder();
-            for (Map.Entry<String, String> e : index.entries().entrySet()) {
+            for (Map.Entry<String, String> e : index.stagedFiles().entrySet()) {
                 sb.append(e.getValue()).append(' ').append(e.getKey()).append('\n');
             }
             Files.writeString(indexFile, sb.toString(), StandardCharsets.UTF_8);
