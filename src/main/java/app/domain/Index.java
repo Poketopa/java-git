@@ -12,16 +12,16 @@ public final class Index {
         validate(stagedFiles);
         if (stagedFiles.isEmpty()) {
             this.stagedFiles = Collections.emptyMap();
-        } else {
-            Map<String, String> copy = new LinkedHashMap<>();
-            for (Map.Entry<String, String> e : stagedFiles.entrySet()) {
-                String path = e.getKey();
-                String oid = e.getValue();
-                checkStagedFileNull(path, oid);
-                copy.put(path, oid);
-            }
-            this.stagedFiles = Collections.unmodifiableMap(copy);
+            return;
         }
+        Map<String, String> copy = new LinkedHashMap<>();
+        for (Map.Entry<String, String> e : stagedFiles.entrySet()) {
+            String path = e.getKey();
+            String oid = e.getValue();
+            checkStagedFileNull(path, oid);
+            copy.put(path, oid);
+        }
+        this.stagedFiles = Collections.unmodifiableMap(copy);
     }
 
     private void validate(Map<String, String> stagedFiles) {
