@@ -1,17 +1,17 @@
-package main.java.app.domain;
+package app.domain;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 public final class Blob {
-    private final byte[] content;
+    private final byte[] file;
 
     public Blob(byte[] content) {
         Objects.requireNonNull(content, "content");
-        this.content = Arrays.copyOf(content, content.length);
+        this.file = Arrays.copyOf(content, content.length);
     }
 
     public byte[] content() {
-        return Arrays.copyOf(content, content.length);
+        return Arrays.copyOf(file, file.length);
     }
 }

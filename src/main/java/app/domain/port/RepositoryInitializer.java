@@ -1,4 +1,4 @@
-package main.java.app.domain.port;
+package app.domain.port;
 
 import java.nio.file.Path;
 

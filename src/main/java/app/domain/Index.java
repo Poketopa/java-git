@@ -1,4 +1,4 @@
-package main.java.app.domain;
+package app.domain;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
