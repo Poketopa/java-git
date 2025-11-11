@@ -1,7 +1,7 @@
 package main.java.app.domain;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import main.java.app.exception.ErrorCode;
 
@@ -14,10 +14,10 @@ public final class Index {
             this.stagedFiles = Collections.emptyMap();
             return;
         }
-        Map<String, String> copy = new LinkedHashMap<>();
-        for (Map.Entry<String, String> e : stagedFiles.entrySet()) {
-            String path = e.getKey();
-            String oid = e.getValue();
+        Map<String, String> copy = new HashMap<>();
+        for (Map.Entry<String, String> stagedFile : stagedFiles.entrySet()) {
+            String path = stagedFile.getKey();
+            String oid = stagedFile.getValue();
             checkStagedFileNull(path, oid);
             copy.put(path, oid);
         }
