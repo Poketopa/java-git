@@ -1,15 +1,21 @@
-package main.java.app.config;
+package app.config;
 
-import main.java.app.application.AddUseCase;
-import main.java.app.application.InitUseCase;
-import main.java.app.application.impl.AddUseCaseImpl;
-import main.java.app.application.impl.InitUseCaseImpl;
-import main.java.app.controller.GitController;
+import app.controller.GitController;
 import main.java.app.repository.FileIndexRepository;
 import main.java.app.repository.FileObjectRepository;
-import main.java.app.service.FileSystemInitService;
+import main.java.app.repository.FileObjectWriter;
+import main.java.app.repository.FileRefRepository;
 import main.java.app.repository.IndexRepository;
 import main.java.app.repository.ObjectRepository;
+import main.java.app.repository.ObjectWriter;
+import main.java.app.repository.RefRepository;
+import main.java.app.service.AddService;
+import main.java.app.service.AddServiceImpl;
+import main.java.app.service.CommitService;
+import main.java.app.service.CommitServiceImpl;
+import main.java.app.service.FileSystemInitService;
+import main.java.app.service.InitService;
+import main.java.app.service.InitServiceImpl;
 
 import java.nio.file.Path;
 import java.util.Objects;
@@ -22,18 +28,23 @@ public final class Appconfig {
     }
 
     public GitController gitController() {
-        return new GitController(initUseCase(), addUseCase());
+        return new GitController(initService(), addService(), commitService());
     }
 
-    private InitUseCase initUseCase() {
-        return new InitUseCaseImpl(new FileSystemInitService(), rootDir);
+    private InitService initService() {
+        return new InitServiceImpl(new FileSystemInitService(), rootDir);
     }
 
-    private AddUseCase addUseCase() {
+    private AddService addService() {
         ObjectRepository objectRepository = new FileObjectRepository(rootDir);
         IndexRepository indexRepository = new FileIndexRepository(rootDir);
-        return new AddUseCaseImpl(objectRepository, indexRepository, rootDir);
+        return new AddServiceImpl(objectRepository, indexRepository, rootDir);
+    }
+
+    private CommitService commitService() {
+        IndexRepository indexRepository = new FileIndexRepository(rootDir);
+        ObjectWriter objectWriter = new FileObjectWriter(rootDir);
+        RefRepository refRepository = new FileRefRepository(rootDir);
+        return new CommitServiceImpl(indexRepository, objectWriter, refRepository, rootDir);
     }
 }
-
-
