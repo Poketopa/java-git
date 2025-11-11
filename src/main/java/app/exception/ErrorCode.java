@@ -17,7 +17,17 @@ public enum ErrorCode {
     OBJECT_DIRECTORY_CREATE_FAILED("[ERROR] 객체 디렉토리 생성에 실패했습니다."),
     OBJECT_FILE_WRITE_FAILED("[ERROR] 객체 파일 쓰기에 실패했습니다."),
     REPOSITORY_INIT_FAILED("[ERROR] 저장소 초기화에 실패했습니다."),
-    FILE_READ_FAILED("[ERROR] 파일 읽기에 실패했습니다.");
+    FILE_READ_FAILED("[ERROR] 파일 읽기에 실패했습니다."),
+    TREE_ENTRIES_NULL("[ERROR] Tree entries는 null일 수 없습니다."),
+    TREE_ENTRY_PATH_NULL("[ERROR] Tree entry의 경로는 null일 수 없습니다."),
+    TREE_ENTRY_OID_NULL("[ERROR] Tree entry의 OID는 null일 수 없습니다."),
+    COMMIT_MESSAGE_NULL("[ERROR] Commit 메시지는 null일 수 없습니다."),
+    COMMIT_MESSAGE_EMPTY("[ERROR] Commit 메시지는 비어있을 수 없습니다."),
+    COMMIT_TREE_OID_NULL("[ERROR] Commit의 Tree OID는 null일 수 없습니다."),
+    COMMIT_AUTHOR_NULL("[ERROR] Commit 작성자는 null일 수 없습니다."),
+    COMMIT_AUTHOR_EMPTY("[ERROR] Commit 작성자는 비어있을 수 없습니다."),
+    HEAD_REF_NULL("[ERROR] HEAD 참조는 null일 수 없습니다."),
+    HEAD_REF_EMPTY("[ERROR] HEAD 참조는 비어있을 수 없습니다.");
 
     private final String message;
 
