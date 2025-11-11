@@ -10,7 +10,12 @@ public enum ErrorCode {
     BLOB_FILE_EMPTY("[ERROR] Blob 내용은 비어있을 수 없습니다."),
     INDEX_STAGED_FILES_NULL("[ERROR] Index staged files는 null일 수 없습니다."),
     INDEX_STAGED_FILE_PATH_NULL("[ERROR] Index staged file의 경로는 null일 수 없습니다."),
-    INDEX_STAGED_FILE_OID_NULL("[ERROR] Index staged file의 OID는 null일 수 없습니다.");
+    INDEX_STAGED_FILE_OID_NULL("[ERROR] Index staged file의 OID는 null일 수 없습니다."),
+    INDEX_FILE_NOT_FOUND("[ERROR] Index 파일을 찾을 수 없습니다."),
+    INDEX_FILE_READ_FAILED("[ERROR] Index 파일 읽기에 실패했습니다."),
+    INDEX_FILE_WRITE_FAILED("[ERROR] Index 파일 쓰기에 실패했습니다."),
+    OBJECT_DIRECTORY_CREATE_FAILED("[ERROR] 객체 디렉토리 생성에 실패했습니다."),
+    OBJECT_FILE_WRITE_FAILED("[ERROR] 객체 파일 쓰기에 실패했습니다.");
 
     private final String message;
 
