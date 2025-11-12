@@ -1,22 +1,22 @@
 package main.java.app.controller;
 
-import main.java.app.application.AddUseCase;
-import main.java.app.application.CommitUseCase;
-import main.java.app.application.InitUseCase;
+import main.java.app.service.AddService;
+import main.java.app.service.CommitService;
+import main.java.app.service.InitService;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public final class GitController {
-    private final InitUseCase initUseCase;
-    private final AddUseCase addUseCase;
-    private final CommitUseCase commitUseCase;
+    private final InitService initService;
+    private final AddService addService;
+    private final CommitService commitService;
 
-    public GitController(InitUseCase initUseCase, AddUseCase addUseCase, CommitUseCase commitUseCase) {
-        this.initUseCase = Objects.requireNonNull(initUseCase, "initUseCase");
-        this.addUseCase = Objects.requireNonNull(addUseCase, "addUseCase");
-        this.commitUseCase = Objects.requireNonNull(commitUseCase, "commitUseCase");
+    public GitController(InitService initService, AddService addService, CommitService commitService) {
+        this.initService = Objects.requireNonNull(initService, "initService");
+        this.addService = Objects.requireNonNull(addService, "addService");
+        this.commitService = Objects.requireNonNull(commitService, "commitService");
     }
 
     public void run(String[] args) {
@@ -27,7 +27,7 @@ public final class GitController {
         String command = args[0];
         switch (command) {
             case "init" -> {
-                initUseCase.init();
+                initService.init();
                 System.out.println("Initialized empty repository.");
             }
             case "add" -> {
@@ -36,7 +36,7 @@ public final class GitController {
                     return;
                 }
                 List<String> filePaths = Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
-                addUseCase.add(filePaths);
+                addService.add(filePaths);
                 System.out.println("Added " + filePaths.size() + " path(s) to index.");
             }
             case "commit" -> {
@@ -46,7 +46,7 @@ public final class GitController {
                     System.err.println("Usage: git commit -m <message> -a <author>");
                     return;
                 }
-                commitUseCase.commit(message, author);
+                commitService.commit(message, author);
                 System.out.println("Created commit.");
             }
             default -> printUsage();
