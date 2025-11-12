@@ -45,17 +45,17 @@ public final class FileIndexRepository implements IndexRepository {
 
     private Index readIndexFile(Path indexFilePath) {
         try {
-            List<String> lines = Files.readAllLines(indexFilePath, StandardCharsets.UTF_8);
-            Map<String, String> stagedFilesMap = parseIndexLines(lines);
+            List<String> indexFileLines = Files.readAllLines(indexFilePath, StandardCharsets.UTF_8);
+            Map<String, String> stagedFilesMap = parseIndexLines(indexFileLines);
             return new Index(stagedFilesMap);
         } catch (IOException e) {
             throw new IllegalArgumentException(ErrorCode.INDEX_FILE_READ_FAILED.message());
         }
     }
 
-    private Map<String, String> parseIndexLines(List<String> lines) {
+    private Map<String, String> parseIndexLines(List<String> indexFileLines) {
         Map<String, String> stagedFilesMap = new LinkedHashMap<>();
-        for (String line : lines) {
+        for (String line : indexFileLines) {
             if (isBlankLine(line)) {
                 continue;
             }
@@ -114,6 +114,5 @@ public final class FileIndexRepository implements IndexRepository {
         }
     }
 }
-
 
 

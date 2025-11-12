@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public final class FileRefRepository implements RefRepository {
+public final class FileRefRepository implements main.java.app.repository.RefRepository {
     private static final String DOT_JGIT = ".jgit";
     private static final String REFS = "refs";
     private static final String HEADS = "heads";
@@ -69,5 +69,6 @@ public final class FileRefRepository implements RefRepository {
         return refsHeadsDirectoryPath.resolve(branchName);
     }
 }
+
 
 

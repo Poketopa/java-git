@@ -23,39 +23,39 @@ public final class FileObjectRepository implements ObjectRepository {
 
     @Override
     public String writeObject(Blob blob) {
-        byte[] fileContent = blob.file();
-        String shaHashValue = calculateSha1(fileContent);
-        Path objectFilePath = buildObjectFilePath(shaHashValue);
+        byte[] blobContent = blob.file();
+        String objectHash = calculateSha1(blobContent);
+        Path objectFilePath = buildObjectFilePath(objectHash);
         Path objectDirectoryPath = objectFilePath.getParent();
         createObjectDirectory(objectDirectoryPath);
-        writeObjectFile(objectFilePath, fileContent);
-        return shaHashValue;
+        writeObjectFile(objectFilePath, blobContent);
+        return objectHash;
     }
 
-    private String calculateSha1(byte[] fileContent) {
+    private String calculateSha1(byte[] blobContent) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-            byte[] digest = messageDigest.digest(fileContent);
+            byte[] digest = messageDigest.digest(blobContent);
             return HexFormat.of().formatHex(digest);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(ErrorCode.SHA1_NOT_AVAILABLE.message());
         }
     }
 
-    private Path buildObjectFilePath(String shaHashValue) {
+    private Path buildObjectFilePath(String objectHash) {
         Path objectsDirectoryPath = rootDirectoryPath.resolve(DOT_JGIT).resolve(OBJECTS);
-        String shaPrefixValue = extractShaPrefix(shaHashValue);
-        String shaSuffixValue = extractShaSuffix(shaHashValue);
-        Path objectSubDirectoryPath = objectsDirectoryPath.resolve(shaPrefixValue);
-        return objectSubDirectoryPath.resolve(shaSuffixValue);
+        String hashPrefix = extractShaPrefix(objectHash);
+        String hashSuffix = extractShaSuffix(objectHash);
+        Path objectSubDirectoryPath = objectsDirectoryPath.resolve(hashPrefix);
+        return objectSubDirectoryPath.resolve(hashSuffix);
     }
 
-    private String extractShaPrefix(String shaHashValue) {
-        return shaHashValue.substring(0, SHA_PREFIX_LENGTH);
+    private String extractShaPrefix(String objectHash) {
+        return objectHash.substring(0, SHA_PREFIX_LENGTH);
     }
 
-    private String extractShaSuffix(String shaHashValue) {
-        return shaHashValue.substring(SHA_PREFIX_LENGTH);
+    private String extractShaSuffix(String objectHash) {
+        return objectHash.substring(SHA_PREFIX_LENGTH);
     }
 
     private void createObjectDirectory(Path objectDirectoryPath) {
@@ -66,16 +66,15 @@ public final class FileObjectRepository implements ObjectRepository {
         }
     }
 
-    private void writeObjectFile(Path objectFilePath, byte[] fileContent) {
+    private void writeObjectFile(Path objectFilePath, byte[] blobContent) {
         if (Files.exists(objectFilePath)) {
             return;
         }
         try {
-            Files.write(objectFilePath, fileContent);
+            Files.write(objectFilePath, blobContent);
         } catch (IOException e) {
             throw new IllegalArgumentException(ErrorCode.OBJECT_FILE_WRITE_FAILED.message());
         }
     }
 }
-
 

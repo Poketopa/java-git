@@ -21,31 +21,31 @@ public final class FileObjectWriter implements ObjectWriter {
     }
 
     @Override
-    public String write(byte[] bytes) {
-        String shaHashValue = calculateSha1(bytes);
-        Path objectFilePath = buildObjectFilePath(shaHashValue);
+    public String write(byte[] objectContent) {
+        String objectHash = calculateSha1(objectContent);
+        Path objectFilePath = buildObjectFilePath(objectHash);
         Path objectDirectoryPath = objectFilePath.getParent();
         createObjectDirectory(objectDirectoryPath);
-        writeObjectFile(objectFilePath, bytes);
-        return shaHashValue;
+        writeObjectFile(objectFilePath, objectContent);
+        return objectHash;
     }
 
-    private String calculateSha1(byte[] bytes) {
+    private String calculateSha1(byte[] objectContent) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-            byte[] digest = messageDigest.digest(bytes);
+            byte[] digest = messageDigest.digest(objectContent);
             return HexFormat.of().formatHex(digest);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(ErrorCode.SHA1_NOT_AVAILABLE.message());
         }
     }
 
-    private Path buildObjectFilePath(String shaHashValue) {
+    private Path buildObjectFilePath(String objectHash) {
         Path objectsDirectoryPath = rootDirectoryPath.resolve(DOT_JGIT).resolve(OBJECTS);
-        String shaPrefixValue = shaHashValue.substring(0, SHA_PREFIX_LENGTH);
-        String shaSuffixValue = shaHashValue.substring(SHA_PREFIX_LENGTH);
-        Path objectSubDirectoryPath = objectsDirectoryPath.resolve(shaPrefixValue);
-        return objectSubDirectoryPath.resolve(shaSuffixValue);
+        String hashPrefix = objectHash.substring(0, SHA_PREFIX_LENGTH);
+        String hashSuffix = objectHash.substring(SHA_PREFIX_LENGTH);
+        Path objectSubDirectoryPath = objectsDirectoryPath.resolve(hashPrefix);
+        return objectSubDirectoryPath.resolve(hashSuffix);
     }
 
     private void createObjectDirectory(Path objectDirectoryPath) {
@@ -56,12 +56,12 @@ public final class FileObjectWriter implements ObjectWriter {
         }
     }
 
-    private void writeObjectFile(Path objectFilePath, byte[] bytes) {
+    private void writeObjectFile(Path objectFilePath, byte[] objectContent) {
         if (Files.exists(objectFilePath)) {
             return;
         }
         try {
-            Files.write(objectFilePath, bytes);
+            Files.write(objectFilePath, objectContent);
         } catch (IOException e) {
             throw new IllegalArgumentException(ErrorCode.OBJECT_FILE_WRITE_FAILED.message());
         }
