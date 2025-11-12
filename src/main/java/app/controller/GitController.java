@@ -1,22 +1,22 @@
-package app.controller;
+package main.java.app.controller;
 
-import main.java.app.service.AddService;
-import main.java.app.service.CommitService;
-import main.java.app.service.InitService;
+import main.java.app.application.AddUseCase;
+import main.java.app.application.CommitUseCase;
+import main.java.app.application.InitUseCase;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public final class GitController {
-    private final InitService initService;
-    private final AddService addService;
-    private final CommitService commitService;
+    private final InitUseCase initUseCase;
+    private final AddUseCase addUseCase;
+    private final CommitUseCase commitUseCase;
 
-    public GitController(InitService initService, AddService addService, CommitService commitService) {
-        this.initService = Objects.requireNonNull(initService, "initService");
-        this.addService = Objects.requireNonNull(addService, "addService");
-        this.commitService = Objects.requireNonNull(commitService, "commitService");
+    public GitController(InitUseCase initUseCase, AddUseCase addUseCase, CommitUseCase commitUseCase) {
+        this.initUseCase = Objects.requireNonNull(initUseCase, "initUseCase");
+        this.addUseCase = Objects.requireNonNull(addUseCase, "addUseCase");
+        this.commitUseCase = Objects.requireNonNull(commitUseCase, "commitUseCase");
     }
 
     public void run(String[] args) {
@@ -24,52 +24,54 @@ public final class GitController {
             printUsage();
             return;
         }
-        String cmd = args[0];
-        if ("init".equals(cmd)) {
-            initService.init();
-            System.out.println("Initialized empty repository.");
-            return;
-        }
-        if ("add".equals(cmd)) {
-            if (args.length < 2) {
-                System.err.println("Nothing specified, nothing added.");
-                return;
+        String command = args[0];
+        switch (command) {
+            case "init" -> {
+                initUseCase.init();
+                System.out.println("Initialized empty repository.");
             }
-            List<String> paths = Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
-            addService.add(paths);
-            System.out.println("Added " + paths.size() + " path(s) to index.");
-            return;
-        }
-        if ("commit".equals(cmd)) {
-            String message = parseCommitMessage(args);
-            if (message == null) {
-                System.err.println("commit message is required. usage: git commit -m \"message\"");
-                return;
+            case "add" -> {
+                if (args.length < 2) {
+                    System.err.println("Nothing specified, nothing added.");
+                    return;
+                }
+                List<String> filePaths = Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
+                addUseCase.add(filePaths);
+                System.out.println("Added " + filePaths.size() + " path(s) to index.");
             }
-            String author = System.getProperty("user.name", "anonymous");
-            commitService.commit(message, author);
-            System.out.println("Committed: " + message);
-            return;
+            case "commit" -> {
+                String message = findOptionValue(args, "-m");
+                String author = findOptionValue(args, "-a");
+                if (message == null || message.isBlank() || author == null || author.isBlank()) {
+                    System.err.println("Usage: git commit -m <message> -a <author>");
+                    return;
+                }
+                commitUseCase.commit(message, author);
+                System.out.println("Created commit.");
+            }
+            default -> printUsage();
         }
-        printUsage();
     }
 
     private static void printUsage() {
         System.out.println("Usage:");
         System.out.println("  git init");
         System.out.println("  git add <path> [<path>...]");
-        System.out.println("  git commit -m \"message\"");
+        System.out.println("  git commit -m <message> -a <author>");
     }
 
-    private static String parseCommitMessage(String[] args) {
-        for (int i = 1; i < args.length; i++) {
-            String arg = args[i];
-            if ("-m".equals(arg) && i + 1 < args.length) {
+    private static String findOptionValue(String[] args, String option) {
+        if (args == null || option == null) {
+            return null;
+        }
+        for (int i = 1; i < args.length - 1; i++) {
+            if (option.equals(args[i])) {
                 return args[i + 1];
             }
         }
         return null;
     }
 }
+
 
 

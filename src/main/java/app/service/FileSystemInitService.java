@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public final class FileSystemInitService implements RepositoryInitializer {
+public final class FileSystemInitService {
     private static final String DOT_JGIT = ".jgit";
     private static final String OBJECTS = "objects";
     private static final String REFS = "refs";
@@ -18,7 +18,6 @@ public final class FileSystemInitService implements RepositoryInitializer {
     private static final String MASTER = "master";
     private static final String MASTER_REF = "ref: refs/heads/master\n";
 
-    @Override
     public void initRepository(Path rootDirectoryPath) {
         Objects.requireNonNull(rootDirectoryPath, "rootDirectoryPath");
         Path jgitDirectoryPath = rootDirectoryPath.resolve(DOT_JGIT);
@@ -79,5 +78,4 @@ public final class FileSystemInitService implements RepositoryInitializer {
         }
     }
 }
-
 

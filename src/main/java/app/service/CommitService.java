@@ -13,29 +13,28 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 
-public final class CommitServiceImpl implements CommitService {
+public final class CommitService {
     private final IndexRepository indexRepository;
     private final ObjectWriter objectWriter;
     private final RefRepository refRepository;
     private final Path rootDirectoryPath;
 
-    public CommitServiceImpl(IndexRepository indexRepository, ObjectWriter objectWriter, RefRepository refRepository, Path rootDirectoryPath) {
+    public CommitService(IndexRepository indexRepository, ObjectWriter objectWriter, RefRepository refRepository, Path rootDirectoryPath) {
         this.indexRepository = Objects.requireNonNull(indexRepository, "indexRepository");
         this.objectWriter = Objects.requireNonNull(objectWriter, "objectWriter");
         this.refRepository = Objects.requireNonNull(refRepository, "refRepository");
         this.rootDirectoryPath = Objects.requireNonNull(rootDirectoryPath, "rootDirectoryPath");
     }
 
-    @Override
     public void commit(String message, String author) {
         validate(message, author);
         Index index = indexRepository.read();
         ensureHasStagedFiles(index);
         Tree tree = new Tree(index.stagedFiles());
-        String treeSha = writeTree(tree);
-        String parentSha = readCurrentHeadCommit();
-        String commitSha = writeCommit(new Commit(message, treeSha, emptyToNull(parentSha), author));
-        updateHead(commitSha);
+        String treeHash = writeTree(tree);
+        String parentCommitHash = readCurrentHeadCommit();
+        String commitHash = writeCommit(new Commit(message, treeHash, emptyToNull(parentCommitHash), author));
+        updateHead(commitHash);
         clearIndex();
     }
 
@@ -49,15 +48,15 @@ public final class CommitServiceImpl implements CommitService {
     }
 
     private void ensureHasStagedFiles(Index index) {
-        Map<String, String> staged = index.stagedFiles();
-        if (staged == null || staged.isEmpty()) {
+        Map<String, String> stagedFiles = index.stagedFiles();
+        if (stagedFiles == null || stagedFiles.isEmpty()) {
             throw new IllegalArgumentException("Nothing to commit");
         }
     }
 
     private String writeTree(Tree tree) {
-        byte[] content = buildTreeContent(tree).getBytes(StandardCharsets.UTF_8);
-        return objectWriter.write(content);
+        byte[] treeContent = buildTreeContent(tree).getBytes(StandardCharsets.UTF_8);
+        return objectWriter.write(treeContent);
     }
 
     private String buildTreeContent(Tree tree) {
@@ -78,40 +77,40 @@ public final class CommitServiceImpl implements CommitService {
     }
 
     private String writeCommit(Commit commit) {
-        byte[] content = buildCommitContent(commit).getBytes(StandardCharsets.UTF_8);
-        return objectWriter.write(content);
+        byte[] commitContent = buildCommitContent(commit).getBytes(StandardCharsets.UTF_8);
+        return objectWriter.write(commitContent);
     }
 
     private String buildCommitContent(Commit commit) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("tree ").append(commit.treeOid()).append('\n');
+        StringBuilder contentBuilder = new StringBuilder();
+        contentBuilder.append("tree ").append(commit.treeOid()).append('\n');
         if (commit.parentOid() != null && !commit.parentOid().isBlank()) {
-            sb.append("parent ").append(commit.parentOid()).append('\n');
+            contentBuilder.append("parent ").append(commit.parentOid()).append('\n');
         }
-        sb.append("author ").append(commit.author()).append('\n');
-        sb.append("date ").append(commit.createdAtMillis()).append('\n');
-        sb.append('\n');
-        sb.append(commit.message()).append('\n');
-        return sb.toString();
+        contentBuilder.append("author ").append(commit.author()).append('\n');
+        contentBuilder.append("date ").append(commit.createdAtMillis()).append('\n');
+        contentBuilder.append('\n');
+        contentBuilder.append(commit.message()).append('\n');
+        return contentBuilder.toString();
     }
 
-    private void updateHead(String commitSha) {
+    private void updateHead(String commitHash) {
         String branch = refRepository.readCurrentBranch();
-        refRepository.updateBranchHead(branch, commitSha);
+        refRepository.updateBranchHead(branch, commitHash);
     }
 
     private void clearIndex() {
         indexRepository.write(new Index(Map.of()));
     }
 
-    private String emptyToNull(String s) {
-        if (s == null) {
+    private String emptyToNull(String value) {
+        if (value == null) {
             return null;
         }
-        if (s.isBlank()) {
+        if (value.isBlank()) {
             return null;
         }
-        return s;
+        return value;
     }
 }
 
