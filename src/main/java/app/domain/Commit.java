@@ -5,7 +5,7 @@ import main.java.app.exception.ErrorCode;
 public final class Commit {
     private final String message;
     private final String treeOid;
-    private final String parentOid; // nullable for initial commit
+    private final String parentOid;
     private final String author;
     private final long createdAtMillis;
 
@@ -13,7 +13,7 @@ public final class Commit {
         validate(message, treeOid, author);
         this.message = message;
         this.treeOid = treeOid;
-        this.parentOid = parentOid; // can be null
+        this.parentOid = parentOid;
         this.author = author;
         this.createdAtMillis = System.currentTimeMillis();
     }
@@ -68,5 +68,6 @@ public final class Commit {
         return createdAtMillis;
     }
 }
+
 
 
