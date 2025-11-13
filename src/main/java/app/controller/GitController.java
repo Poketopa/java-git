@@ -3,74 +3,109 @@ package main.java.app.controller;
 import main.java.app.service.AddService;
 import main.java.app.service.CommitService;
 import main.java.app.service.InitService;
+import main.java.app.view.Messages;
+import main.java.app.util.CommandLineParser;
+import main.java.app.view.OutputView;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public final class GitController {
+    private interface Command {
+        void execute(String[] args);
+    }
+
     private final InitService initService;
     private final AddService addService;
     private final CommitService commitService;
+    private final OutputView outputView;
+    private final Map<String, Command> commandHandlers;
 
     public GitController(InitService initService, AddService addService, CommitService commitService) {
+        this(initService, addService, commitService, null);
+    }
+
+    public GitController(InitService initService, AddService addService, CommitService commitService, OutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
         this.addService = Objects.requireNonNull(addService, "addService");
         this.commitService = Objects.requireNonNull(commitService, "commitService");
+        this.outputView = outputView == null ? null : outputView;
+
+        this.commandHandlers = new HashMap<>();
+        this.commandHandlers.put("init", args -> {
+            initService.init();
+            if (this.outputView != null) {
+                this.outputView.showInitSuccess();
+                return;
+            }
+            System.out.println(Messages.INIT_SUCCESS);
+        });
+        this.commandHandlers.put("add", args -> {
+            List<String> filePaths = CommandLineParser.extractPaths(args);
+            if (filePaths.isEmpty()) {
+                if (this.outputView != null) {
+                    this.outputView.showAddMissingPath();
+                    return;
+                }
+                System.err.println(Messages.ADD_MISSING_PATH);
+                return;
+            }
+            addService.add(filePaths);
+            if (this.outputView != null) {
+                this.outputView.showAddedToIndex(filePaths.size());
+                return;
+            }
+            System.out.printf(Messages.ADDED_TO_INDEX + "%n", filePaths.size());
+        });
+        this.commandHandlers.put("commit", args -> {
+            String message = CommandLineParser.findOptionValue(args, "-m");
+            String author = CommandLineParser.findOptionValue(args, "-a");
+            if (message == null || message.isBlank() || author == null || author.isBlank()) {
+                if (this.outputView != null) {
+                    this.outputView.showCommitUsageError();
+                    return;
+                }
+                System.err.println(Messages.COMMIT_USAGE_ERROR);
+                return;
+            }
+            commitService.commit(message, author);
+            if (this.outputView != null) {
+                this.outputView.showCommitCreated();
+                return;
+            }
+            System.out.println(Messages.COMMIT_CREATED);
+        });
     }
 
     public void run(String[] args) {
         if (args == null || args.length == 0) {
-            printUsage();
+            if (this.outputView != null) {
+                this.outputView.showUsage();
+            } else {
+                System.out.println(Messages.USAGE_HEADER);
+                System.out.println(Messages.USAGE_INIT);
+                System.out.println(Messages.USAGE_ADD);
+                System.out.println(Messages.USAGE_COMMIT);
+            }
             return;
         }
-        String command = args[0];
-        switch (command) {
-            case "init" -> {
-                initService.init();
-                System.out.println("Initialized empty repository.");
+        Command handler = commandHandlers.get(args[0]);
+        if (handler == null) {
+            if (this.outputView != null) {
+                this.outputView.showUsage();
+            } else {
+                System.out.println(Messages.USAGE_HEADER);
+                System.out.println(Messages.USAGE_INIT);
+                System.out.println(Messages.USAGE_ADD);
+                System.out.println(Messages.USAGE_COMMIT);
             }
-            case "add" -> {
-                if (args.length < 2) {
-                    System.err.println("Nothing specified, nothing added.");
-                    return;
-                }
-                List<String> filePaths = Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
-                addService.add(filePaths);
-                System.out.println("Added " + filePaths.size() + " path(s) to index.");
-            }
-            case "commit" -> {
-                String message = findOptionValue(args, "-m");
-                String author = findOptionValue(args, "-a");
-                if (message == null || message.isBlank() || author == null || author.isBlank()) {
-                    System.err.println("Usage: git commit -m <message> -a <author>");
-                    return;
-                }
-                commitService.commit(message, author);
-                System.out.println("Created commit.");
-            }
-            default -> printUsage();
+            return;
         }
+        handler.execute(args);
     }
 
-    private static void printUsage() {
-        System.out.println("Usage:");
-        System.out.println("  git init");
-        System.out.println("  git add <path> [<path>...]");
-        System.out.println("  git commit -m <message> -a <author>");
-    }
-
-    private static String findOptionValue(String[] args, String option) {
-        if (args == null || option == null) {
-            return null;
-        }
-        for (int i = 1; i < args.length - 1; i++) {
-            if (option.equals(args[i])) {
-                return args[i + 1];
-            }
-        }
-        return null;
-    }
 }
 
 
