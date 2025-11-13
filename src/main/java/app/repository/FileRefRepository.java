@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 public final class FileRefRepository implements main.java.app.repository.RefRepository {
-    private static final String DOT_JGIT = ".jgit";
+    private static final String DOT_JAVA_GIT = ".javaGit";
     private static final String REFS = "refs";
     private static final String HEADS = "heads";
     private static final String HEAD = "HEAD";
@@ -22,7 +22,7 @@ public final class FileRefRepository implements main.java.app.repository.RefRepo
 
     @Override
     public String readCurrentBranch() {
-        Path headFilePath = rootDirectoryPath.resolve(DOT_JGIT).resolve(HEAD);
+        Path headFilePath = rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(HEAD);
         try {
             String content = Files.readString(headFilePath, StandardCharsets.UTF_8).trim();
             return parseBranchName(content);
@@ -65,7 +65,7 @@ public final class FileRefRepository implements main.java.app.repository.RefRepo
     }
 
     private Path branchFilePath(String branchName) {
-        Path refsHeadsDirectoryPath = rootDirectoryPath.resolve(DOT_JGIT).resolve(REFS).resolve(HEADS);
+        Path refsHeadsDirectoryPath = rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(REFS).resolve(HEADS);
         return refsHeadsDirectoryPath.resolve(branchName);
     }
 }
