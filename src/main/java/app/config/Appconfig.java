@@ -1,6 +1,7 @@
 package main.java.app.config;
 
 import main.java.app.controller.GitController;
+import main.java.app.view.OutputView;
 import main.java.app.repository.FileIndexRepository;
 import main.java.app.repository.FileObjectWriter;
 import main.java.app.repository.FileRefRepository;
@@ -23,7 +24,7 @@ public final class Appconfig {
     }
 
     public GitController gitController() {
-        return new GitController(initService(), addService(), commitService());
+        return new GitController(initService(), addService(), commitService(), outputView());
     }
 
     private InitService initService() {
@@ -41,6 +42,10 @@ public final class Appconfig {
         ObjectWriter objectWriter = new FileObjectWriter(rootDirectoryPath);
         RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
         return new CommitService(indexRepository, objectWriter, refRepository, rootDirectoryPath);
+    }
+
+    private OutputView outputView() {
+        return new OutputView();
     }
 }
 
