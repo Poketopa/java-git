@@ -2,11 +2,9 @@ package main.java.app.config;
 
 import main.java.app.controller.GitController;
 import main.java.app.repository.FileIndexRepository;
-import main.java.app.repository.FileObjectRepository;
 import main.java.app.repository.FileObjectWriter;
 import main.java.app.repository.FileRefRepository;
 import main.java.app.repository.IndexRepository;
-import main.java.app.repository.ObjectRepository;
 import main.java.app.repository.ObjectWriter;
 import main.java.app.repository.RefRepository;
 import main.java.app.service.AddService;
@@ -33,9 +31,9 @@ public final class Appconfig {
     }
 
     private AddService addService() {
-        ObjectRepository objectRepository = new FileObjectRepository(rootDirectoryPath);
         IndexRepository indexRepository = new FileIndexRepository(rootDirectoryPath);
-        return new AddService(objectRepository, indexRepository, rootDirectoryPath);
+        ObjectWriter objectWriter = new FileObjectWriter(rootDirectoryPath);
+        return new AddService(objectWriter, indexRepository, rootDirectoryPath);
     }
 
     private CommitService commitService() {
