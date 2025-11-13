@@ -3,7 +3,7 @@
 ## 구현 목표
 - 로컬에서 CLI로 동작하는 git을 순수 Java로 구현한다.
 - Git의 내부 구조를 이해하고 구현
-- `.jgit` 디렉토리에 Git 메타데이터 저장
+- `.javaGit` 디렉토리에 Git 메타데이터 저장
 - 실제 Git과 호환 가능하도록 구현 목표
 - 이전 프리코스 미션 원칙 준수
 - DDD 패턴 적용
@@ -12,7 +12,7 @@
 
 ### 메인 로직
 - [x] 저장소 초기화 기능 (git init)
-    - [x] `.jgit` 디렉토리 생성
+    - [x] `.javaGit` 디렉토리 생성
     - [x] `objects` 디렉토리 생성
     - [x] `refs/heads` 디렉토리 생성
     - [x] `HEAD` 파일 생성 및 기본 브랜치 참조 설정
@@ -33,9 +33,9 @@
     - [x] HEAD 업데이트
     - [x] 커밋 후 Index 초기화
 - [x] Git 객체 저장
-    - [x] Blob 객체를 `.jgit/objects` 디렉토리에 저장
-    - [x] Tree 객체를 `.jgit/objects` 디렉토리에 저장
-    - [x] Commit 객체를 `.jgit/objects` 디렉토리에 저장
+    - [x] Blob 객체를 `.javaGit/objects` 디렉토리에 저장
+    - [x] Tree 객체를 `.javaGit/objects` 디렉토리에 저장
+    - [x] Commit 객체를 `.javaGit/objects` 디렉토리에 저장
     - [x] SHA-1 해시 기반 디렉토리 구조 (앞 2자리/나머지)
     - [x] Index 파일 읽기/쓰기
     - [x] HEAD 및 브랜치 참조 파일 읽기/쓰기
@@ -98,7 +98,7 @@
 - [x] Head 객체 구현
 
 ### 명령어 구현
-- [x] init: 저장소 초기화 (.jgit 디렉토리 생성)
+- [x] init: 저장소 초기화 (.javaGit 디렉토리 생성)
 - [x] add: 파일을 스테이징 영역에 추가
 - [x] commit: 스테이징된 파일들을 커밋
 - [ ] status: 현재 상태 확인
@@ -164,7 +164,7 @@
 
 ### Service
 #### FileSystemInitService:
-- 파일 시스템에 `.jgit` 디렉토리 구조 생성
+- 파일 시스템에 `.javaGit` 디렉토리 구조 생성
 - objects, refs/heads 디렉토리 생성
 - HEAD, index 파일 생성
 #### CommitService:
@@ -210,14 +210,14 @@
 - writeObject(Blob): SHA-1 해시 반환
 #### FileObjectRepository:
 - 파일 시스템 기반 Blob 저장소 구현
-- `.jgit/objects/{sha[0:2]}/{sha[2:]}` 경로에 저장
+- `.javaGit/objects/{sha[0:2]}/{sha[2:]}` 경로에 저장
 - SHA-1 해시 계산 및 저장
 #### ObjectWriter:
 - 범용 객체 저장소 인터페이스 (Blob, Tree, Commit)
 - write(byte[]): SHA-1 해시 반환
 #### FileObjectWriter:
 - 파일 시스템 기반 범용 객체 저장소 구현
-- `.jgit/objects/{sha[0:2]}/{sha[2:]}` 경로에 저장
+- `.javaGit/objects/{sha[0:2]}/{sha[2:]}` 경로에 저장
 - SHA-1 해시 계산 및 저장
 #### IndexRepository:
 - Index 저장소 인터페이스
@@ -225,7 +225,7 @@
 - write(Index): Index 쓰기
 #### FileIndexRepository:
 - 파일 시스템 기반 Index 저장소 구현
-- `.jgit/index` 파일에 저장
+- `.javaGit/index` 파일에 저장
 - 파일 형식: `{sha} {path}\n`
 - 파일 파싱 및 직렬화
 #### RefRepository:
@@ -235,8 +235,8 @@
 - updateBranchHead(String, String): 브랜치 HEAD 업데이트
 #### FileRefRepository:
 - 파일 시스템 기반 참조 저장소 구현
-- `.jgit/HEAD` 파일에서 현재 브랜치 읽기
-- `.jgit/refs/heads/{branch}` 파일에서 브랜치 HEAD 읽기/쓰기
+- `.javaGit/HEAD` 파일에서 현재 브랜치 읽기
+- `.javaGit/refs/heads/{branch}` 파일에서 브랜치 HEAD 읽기/쓰기
 
 ### Exception
 #### ErrorCode(enum):
