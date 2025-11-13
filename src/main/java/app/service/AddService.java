@@ -1,10 +1,9 @@
 package main.java.app.service;
 
-import main.java.app.domain.Blob;
 import main.java.app.domain.Index;
 import main.java.app.exception.ErrorCode;
 import main.java.app.repository.IndexRepository;
-import main.java.app.repository.ObjectRepository;
+import main.java.app.repository.ObjectWriter;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,12 +14,12 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class AddService {
-    private final ObjectRepository objectRepository;
+    private final ObjectWriter objectWriter;
     private final IndexRepository indexRepository;
     private final Path rootDirectoryPath;
 
-    public AddService(ObjectRepository objectRepository, IndexRepository indexRepository, Path rootDirectoryPath) {
-        this.objectRepository = Objects.requireNonNull(objectRepository, "objectRepository");
+    public AddService(ObjectWriter objectWriter, IndexRepository indexRepository, Path rootDirectoryPath) {
+        this.objectWriter = Objects.requireNonNull(objectWriter, "objectWriter");
         this.indexRepository = Objects.requireNonNull(indexRepository, "indexRepository");
         this.rootDirectoryPath = Objects.requireNonNull(rootDirectoryPath, "rootDirectoryPath");
     }
@@ -40,7 +39,7 @@ public final class AddService {
             }
 
             byte[] fileContent = readFileContent(absoluteFilePath);
-            String objectHash = objectRepository.writeObject(new Blob(fileContent));
+            String objectHash = objectWriter.write(fileContent);
             stagedFilesMap.put(filePath, objectHash);
         }
 
