@@ -11,7 +11,7 @@ import java.util.HexFormat;
 import java.util.Objects;
 
 public final class FileObjectWriter implements ObjectWriter {
-    private static final String DOT_JGIT = ".jgit";
+    private static final String DOT_JAVA_GIT = ".javaGit";
     private static final String OBJECTS = "objects";
     private static final int SHA_PREFIX_LENGTH = 2;
     private final Path rootDirectoryPath;
@@ -41,7 +41,7 @@ public final class FileObjectWriter implements ObjectWriter {
     }
 
     private Path buildObjectFilePath(String objectHash) {
-        Path objectsDirectoryPath = rootDirectoryPath.resolve(DOT_JGIT).resolve(OBJECTS);
+        Path objectsDirectoryPath = rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(OBJECTS);
         String hashPrefix = objectHash.substring(0, SHA_PREFIX_LENGTH);
         String hashSuffix = objectHash.substring(SHA_PREFIX_LENGTH);
         Path objectSubDirectoryPath = objectsDirectoryPath.resolve(hashPrefix);
