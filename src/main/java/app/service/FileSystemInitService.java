@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 public final class FileSystemInitService {
-    private static final String DOT_JGIT = ".jgit";
+    private static final String DOT_JAVA_GIT = ".javaGit";
     private static final String OBJECTS = "objects";
     private static final String REFS = "refs";
     private static final String HEADS = "heads";
@@ -20,7 +20,7 @@ public final class FileSystemInitService {
 
     public void initRepository(Path rootDirectoryPath) {
         Objects.requireNonNull(rootDirectoryPath, "rootDirectoryPath");
-        Path jgitDirectoryPath = rootDirectoryPath.resolve(DOT_JGIT);
+        Path jgitDirectoryPath = rootDirectoryPath.resolve(DOT_JAVA_GIT);
         createRepositoryDirectories(jgitDirectoryPath);
         createRepositoryFiles(jgitDirectoryPath);
     }
