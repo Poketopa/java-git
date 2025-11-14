@@ -6,6 +6,8 @@ public enum ErrorCode {
     FILE_IO_ERROR("[ERROR] 파일 시스템 작업 중 오류가 발생했습니다."),
     INDEX_READ_ERROR("[ERROR] 인덱스 파일을 읽는 도중 오류가 발생했습니다."),
     INDEX_WRITE_ERROR("[ERROR] 인덱스 파일을 쓰는 도중 오류가 발생했습니다."),
+    OBJECT_FILE_NOT_FOUND("[ERROR] 객체 파일을 찾을 수 없습니다."),
+    OBJECT_FILE_READ_FAILED("[ERROR] 객체 파일 읽기에 실패했습니다."),
     BLOB_FILE_NULL("[ERROR] Blob 내용은 null일 수 없습니다."),
     BLOB_FILE_EMPTY("[ERROR] Blob 내용은 비어있을 수 없습니다."),
     INDEX_STAGED_FILES_NULL("[ERROR] Index staged files는 null일 수 없습니다."),
@@ -27,7 +29,9 @@ public enum ErrorCode {
     COMMIT_AUTHOR_NULL("[ERROR] Commit 작성자는 null일 수 없습니다."),
     COMMIT_AUTHOR_EMPTY("[ERROR] Commit 작성자는 비어있을 수 없습니다."),
     HEAD_REF_NULL("[ERROR] HEAD 참조는 null일 수 없습니다."),
-    HEAD_REF_EMPTY("[ERROR] HEAD 참조는 비어있을 수 없습니다.");
+    HEAD_REF_EMPTY("[ERROR] HEAD 참조는 비어있을 수 없습니다."),
+    MALFORMED_TREE_OBJECT("[ERROR] 손상되었거나 잘못된 Tree 객체 포맷입니다."),
+    MALFORMED_COMMIT_OBJECT("[ERROR] 손상되었거나 잘못된 Commit 객체 포맷입니다.");
 
     private final String message;
 
