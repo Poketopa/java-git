@@ -13,6 +13,14 @@ public final class Messages {
     public static final String USAGE_ADD = "  git add <경로> [<경로>...]";
     public static final String USAGE_COMMIT = "  git commit -m <메시지> -a <작성자>";
 
+    public static final String STATUS_CLEAN = "nothing to commit, working tree clean";
+    public static final String STATUS_SECTION_STAGED = "Changes to be committed:";
+    public static final String STATUS_SECTION_NOT_STAGED = "Changes not staged for commit:";
+    public static final String STATUS_SECTION_UNTRACKED = "Untracked files:";
+    public static final String STATUS_STAGED_ADDED = "  (added)";
+    public static final String STATUS_STAGED_MODIFIED = "  (modified)";
+    public static final String STATUS_STAGED_DELETED = "  (deleted)";
+
     private Messages() {
     }
 }
