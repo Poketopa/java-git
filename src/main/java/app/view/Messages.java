@@ -17,9 +17,12 @@ public final class Messages {
     public static final String STATUS_SECTION_STAGED = "Changes to be committed:";
     public static final String STATUS_SECTION_NOT_STAGED = "Changes not staged for commit:";
     public static final String STATUS_SECTION_UNTRACKED = "Untracked files:";
-    public static final String STATUS_STAGED_ADDED = "  (added)";
-    public static final String STATUS_STAGED_MODIFIED = "  (modified)";
-    public static final String STATUS_STAGED_DELETED = "  (deleted)";
+    public static final String STATUS_INDENT = "  ";
+    public static final String STATUS_STAGED_ADDED = "(added)";
+    public static final String STATUS_STAGED_MODIFIED = "(modified)";
+    public static final String STATUS_STAGED_DELETED = "(deleted)";
+    public static final String STATUS_LABEL_MODIFIED = "modified: ";
+    public static final String STATUS_LABEL_DELETED = "deleted: ";
 
     private Messages() {
     }
