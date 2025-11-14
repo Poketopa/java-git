@@ -3,6 +3,7 @@ package main.java.app.controller;
 import main.java.app.service.AddService;
 import main.java.app.service.CommitService;
 import main.java.app.service.InitService;
+import main.java.app.service.StatusService;
 import main.java.app.util.CommandLineParser;
 import main.java.app.view.ConsoleOutputView;
 
@@ -19,13 +20,15 @@ public final class GitController {
     private final InitService initService;
     private final AddService addService;
     private final CommitService commitService;
+    private final StatusService statusService;
     private final ConsoleOutputView outputView;
     private final Map<String, Command> commandHandlers;
 
-    public GitController(InitService initService, AddService addService, CommitService commitService, ConsoleOutputView outputView) {
+    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, ConsoleOutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
         this.addService = Objects.requireNonNull(addService, "addService");
         this.commitService = Objects.requireNonNull(commitService, "commitService");
+        this.statusService = Objects.requireNonNull(statusService, "statusService");
         this.outputView = Objects.requireNonNull(outputView, "outputView");
         this.commandHandlers = new HashMap<>();
         registerCommandHandlers();
@@ -67,6 +70,10 @@ public final class GitController {
             }
             commitService.commit(message, author);
             outputView.showCommitCreated();
+        });
+        this.commandHandlers.put("status", args -> {
+            StatusService.StatusResult result = statusService.status();
+            outputView.showStatus(result);
         });
     }
 
