@@ -1,7 +1,7 @@
 package main.java.app.config;
 
 import main.java.app.controller.GitController;
-import main.java.app.view.ConsoleOutputView;
+import main.java.app.view.OutputView;
 import main.java.app.repository.FileIndexRepository;
 import main.java.app.repository.FileObjectReader;
 import main.java.app.repository.FileObjectWriter;
@@ -54,8 +54,8 @@ public final class Appconfig {
         return new StatusService(indexRepository, refRepository, objectReader, rootDirectoryPath);
     }
 
-    private ConsoleOutputView outputView() {
-        return new ConsoleOutputView();
+    private OutputView outputView() {
+        return new OutputView();
     }
 }
 
