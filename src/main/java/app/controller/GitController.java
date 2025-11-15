@@ -5,7 +5,7 @@ import main.java.app.service.CommitService;
 import main.java.app.service.InitService;
 import main.java.app.service.StatusService;
 import main.java.app.util.CommandLineParser;
-import main.java.app.view.ConsoleOutputView;
+import main.java.app.view.OutputView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +21,10 @@ public final class GitController {
     private final AddService addService;
     private final CommitService commitService;
     private final StatusService statusService;
-    private final ConsoleOutputView outputView;
+    private final OutputView outputView;
     private final Map<String, Command> commandHandlers;
 
-    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, ConsoleOutputView outputView) {
+    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, OutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
         this.addService = Objects.requireNonNull(addService, "addService");
         this.commitService = Objects.requireNonNull(commitService, "commitService");
