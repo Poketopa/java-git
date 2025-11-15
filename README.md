@@ -81,7 +81,7 @@
 - [x] git commit
 - [ ] git push
 - [ ] git pull
-- [ ] git status
+- [x] git status
 - [ ] git log
 - [ ] git branch
 - [ ] git checkout
@@ -101,7 +101,7 @@
 - [x] init: 저장소 초기화 (.javaGit 디렉토리 생성)
 - [x] add: 파일을 스테이징 영역에 추가
 - [x] commit: 스테이징된 파일들을 커밋
-- [ ] status: 현재 상태 확인
+- [x] status: 현재 상태 확인 (Working ↔ Index ↔ HEAD 3-way 비교)
 - [ ] log: 커밋 히스토리 출력
 - [ ] branch: 브랜치 생성/조회
 - [ ] checkout: 브랜치 전환
@@ -114,7 +114,7 @@
 - [x] CLI 명령어 파싱
 - [x] 기본 출력 메시지
 - [x] 커밋 명령어 옵션 파싱 (-m, -a)
-- [ ] 상세한 상태 출력 (status)
+- [x] 상세한 상태 출력 (status)
 - [ ] 커밋 로그 포맷팅 (log)
 
 ### 예외처리
