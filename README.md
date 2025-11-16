@@ -83,7 +83,7 @@
 - [ ] git pull
 - [x] git status
 - [x] git log
-- [ ] git branch
+- [x] git branch
 - [ ] git checkout
 - [ ] git merge
 - [ ] git clone
@@ -103,7 +103,7 @@
 - [x] commit: 스테이징된 파일들을 커밋
 - [x] status: 현재 상태 확인 (Working ↔ Index ↔ HEAD 3-way 비교)
 - [x] log: 커밋 히스토리 출력
-- [ ] branch: 브랜치 생성/조회
+- [x] branch: 브랜치 생성/조회
 - [ ] checkout: 브랜치 전환
 - [ ] merge: 브랜치 병합
 - [ ] push: 원격 저장소에 푸시
