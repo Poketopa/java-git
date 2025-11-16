@@ -33,6 +33,11 @@ public final class Messages {
     public static final String BRANCH_ALREADY_EXISTS = "이미 존재하는 브랜치입니다: ";
     public static final String BRANCH_NAME_INVALID = "브랜치 이름이 유효하지 않습니다.";
 
+    public static final String CHECKOUT_USAGE = "사용법: git checkout <브랜치>";
+    public static final String CHECKOUT_SUCCESS = "브랜치를 전환했습니다: ";
+    public static final String CHECKOUT_DIRTY = "작업 트리가 깨끗하지 않습니다. 변경 사항을 정리하세요.";
+    public static final String CHECKOUT_NOT_FOUND = "존재하지 않는 브랜치입니다: ";
+
     private Messages() {
     }
 }
