@@ -74,6 +74,22 @@ public final class OutputView {
         System.err.println(Messages.BRANCH_ALREADY_EXISTS + name);
     }
 
+    public void showCheckoutUsage() {
+        System.out.println(Messages.CHECKOUT_USAGE);
+    }
+
+    public void showCheckoutSuccess(String branch) {
+        System.out.println(Messages.CHECKOUT_SUCCESS + branch);
+    }
+
+    public void showCheckoutDirty() {
+        System.err.println(Messages.CHECKOUT_DIRTY);
+    }
+
+    public void showCheckoutNotFound(String branch) {
+        System.err.println(Messages.CHECKOUT_NOT_FOUND + branch);
+    }
+
     public void showLog(java.util.List<LogService.LogEntry> entries) {
         if (entries == null || entries.isEmpty()) {
             System.out.println(Messages.LOG_NO_COMMITS);
