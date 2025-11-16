@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 // Ref git에서 특정 커밋을 가리키는 포인터
@@ -70,6 +72,39 @@ public final class FileRefRepository implements RefRepository {
             Files.writeString(branchFilePath, commitSha, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new IllegalArgumentException(ErrorCode.INDEX_FILE_WRITE_FAILED.message());
+        }
+    }
+
+    @Override
+    public List<String> listBranches() {
+        Path refsHeadsDirectoryPath = rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(REFS).resolve(HEADS);
+        if (!Files.exists(refsHeadsDirectoryPath)) {
+            return List.of();
+        }
+        List<String> names = new ArrayList<>();
+        try (var stream = Files.list(refsHeadsDirectoryPath)) {
+            stream.filter(Files::isRegularFile).forEach(p -> names.add(p.getFileName().toString()));
+        } catch (IOException e) {
+            throw new IllegalArgumentException(ErrorCode.FILE_IO_ERROR.message());
+        }
+        names.sort(String::compareTo);
+        return List.copyOf(names);
+    }
+
+    @Override
+    public void createBranch(String branchName, String baseCommitSha) {
+        Path file = branchFilePath(branchName);
+        if (Files.exists(file)) {
+            throw new IllegalArgumentException("[ERROR] 이미 존재하는 브랜치입니다: " + branchName);
+        }
+        try {
+            Path parent = file.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+            Files.writeString(file, baseCommitSha == null ? "" : baseCommitSha, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(ErrorCode.FILE_IO_ERROR.message());
         }
     }
 
