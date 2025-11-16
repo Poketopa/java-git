@@ -4,6 +4,7 @@ import main.java.app.service.AddService;
 import main.java.app.service.CommitService;
 import main.java.app.service.InitService;
 import main.java.app.service.StatusService;
+import main.java.app.service.LogService;
 import main.java.app.util.CommandLineParser;
 import main.java.app.view.OutputView;
 
@@ -21,14 +22,16 @@ public final class GitController {
     private final AddService addService;
     private final CommitService commitService;
     private final StatusService statusService;
+    private final LogService logService;
     private final OutputView outputView;
     private final Map<String, Command> commandHandlers;
 
-    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, OutputView outputView) {
+    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, OutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
         this.addService = Objects.requireNonNull(addService, "addService");
         this.commitService = Objects.requireNonNull(commitService, "commitService");
         this.statusService = Objects.requireNonNull(statusService, "statusService");
+        this.logService = Objects.requireNonNull(logService, "logService");
         this.outputView = Objects.requireNonNull(outputView, "outputView");
         this.commandHandlers = new HashMap<>();
         registerCommandHandlers();
@@ -74,6 +77,10 @@ public final class GitController {
         this.commandHandlers.put("status", args -> {
             StatusService.StatusResult result = statusService.status();
             outputView.showStatus(result);
+        });
+        this.commandHandlers.put("log", args -> {
+            java.util.List<LogService.LogEntry> entries = logService.list();
+            outputView.showLog(entries);
         });
     }
 
