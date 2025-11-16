@@ -84,7 +84,7 @@
 - [x] git status
 - [x] git log
 - [x] git branch
-- [ ] git checkout
+- [x] git checkout
 - [ ] git merge
 - [ ] git clone
 
@@ -104,7 +104,7 @@
 - [x] status: 현재 상태 확인 (Working ↔ Index ↔ HEAD 3-way 비교)
 - [x] log: 커밋 히스토리 출력
 - [x] branch: 브랜치 생성/조회
-- [ ] checkout: 브랜치 전환
+- [x] checkout: 브랜치 전환 (안전 전환: HEAD만 변경, dirty 시 차단)
 - [ ] merge: 브랜치 병합
 - [ ] push: 원격 저장소에 푸시
 - [ ] pull: 원격 저장소에서 풀
