@@ -108,6 +108,16 @@ public final class FileRefRepository implements RefRepository {
         }
     }
 
+    @Override
+    public void updateCurrentBranch(String branchName) {
+        Path headFilePath = rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(HEAD);
+        try {
+            Files.writeString(headFilePath, REF_PREFIX + branchName + "\n", StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(ErrorCode.FILE_IO_ERROR.message());
+        }
+    }
+
     private Path branchFilePath(String branchName) {
         Path refsHeadsDirectoryPath = rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(REFS).resolve(HEADS);
         return refsHeadsDirectoryPath.resolve(branchName);
