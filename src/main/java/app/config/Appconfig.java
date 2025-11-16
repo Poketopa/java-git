@@ -15,6 +15,7 @@ import main.java.app.service.CommitService;
 import main.java.app.service.FileSystemInitService;
 import main.java.app.service.InitService;
 import main.java.app.service.StatusService;
+import main.java.app.service.LogService;
 
 import java.nio.file.Path;
 import java.util.Objects;
@@ -27,7 +28,7 @@ public final class Appconfig {
     }
 
     public GitController gitController() {
-        return new GitController(initService(), addService(), commitService(), statusService(), outputView());
+        return new GitController(initService(), addService(), commitService(), statusService(), logService(), outputView());
     }
 
     private InitService initService() {
@@ -52,6 +53,12 @@ public final class Appconfig {
         RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
         ObjectReader objectReader = new FileObjectReader(rootDirectoryPath);
         return new StatusService(indexRepository, refRepository, objectReader, rootDirectoryPath);
+    }
+
+    private LogService logService() {
+        RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
+        ObjectReader objectReader = new FileObjectReader(rootDirectoryPath);
+        return new LogService(refRepository, objectReader);
     }
 
     private OutputView outputView() {
