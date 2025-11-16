@@ -28,6 +28,11 @@ public final class Messages {
     public static final String LOG_LABEL_AUTHOR = "author: ";
     public static final String LOG_LABEL_DATE = "date: ";
 
+    public static final String BRANCH_LIST_HEADER = "Branches:";
+    public static final String BRANCH_CREATED = "브랜치를 생성했습니다: ";
+    public static final String BRANCH_ALREADY_EXISTS = "이미 존재하는 브랜치입니다: ";
+    public static final String BRANCH_NAME_INVALID = "브랜치 이름이 유효하지 않습니다.";
+
     private Messages() {
     }
 }
