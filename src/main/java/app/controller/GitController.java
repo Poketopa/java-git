@@ -6,6 +6,7 @@ import main.java.app.service.InitService;
 import main.java.app.service.StatusService;
 import main.java.app.service.LogService;
 import main.java.app.service.BranchService;
+import main.java.app.service.CheckoutService;
 import main.java.app.util.CommandLineParser;
 import main.java.app.view.OutputView;
 
@@ -25,16 +26,18 @@ public final class GitController {
     private final StatusService statusService;
     private final LogService logService;
     private final BranchService branchService;
+    private final CheckoutService checkoutService;
     private final OutputView outputView;
     private final Map<String, Command> commandHandlers;
 
-    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, OutputView outputView) {
+    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, CheckoutService checkoutService, OutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
         this.addService = Objects.requireNonNull(addService, "addService");
         this.commitService = Objects.requireNonNull(commitService, "commitService");
         this.statusService = Objects.requireNonNull(statusService, "statusService");
         this.logService = Objects.requireNonNull(logService, "logService");
         this.branchService = Objects.requireNonNull(branchService, "branchService");
+        this.checkoutService = Objects.requireNonNull(checkoutService, "checkoutService");
         this.outputView = Objects.requireNonNull(outputView, "outputView");
         this.commandHandlers = new HashMap<>();
         registerCommandHandlers();
@@ -100,6 +103,19 @@ public final class GitController {
                 return;
             }
             showUsage();
+        });
+        this.commandHandlers.put("checkout", args -> {
+            if (args.length != 2) {
+                outputView.showCheckoutUsage();
+                return;
+            }
+            String branch = args[1];
+            CheckoutService.CheckoutResult result = checkoutService.switchBranch(branch);
+            switch (result) {
+                case SUCCESS -> outputView.showCheckoutSuccess(branch);
+                case BRANCH_NOT_FOUND -> outputView.showCheckoutNotFound(branch);
+                case WORKING_TREE_NOT_CLEAN -> outputView.showCheckoutDirty();
+            }
         });
     }
 
