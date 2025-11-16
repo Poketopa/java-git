@@ -64,7 +64,7 @@ public final class OutputView {
             return;
         }
         for (LogService.LogEntry e : entries) {
-            String shortOid = e.oid().length() >= 7 ? e.oid().substring(0, 7) : e.oid();
+            String shortOid = e.hash().length() >= 7 ? e.hash().substring(0, 7) : e.hash();
             System.out.println(shortOid + " " + e.message());
             System.out.println(Messages.STATUS_INDENT + Messages.LOG_LABEL_AUTHOR + e.author());
             System.out.println(Messages.STATUS_INDENT + Messages.LOG_LABEL_DATE + e.dateTimeIso());

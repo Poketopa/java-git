@@ -105,11 +105,11 @@ public final class StatusService {
 
     private Map<String, String> readHeadTreeSnapshot() {
         String branch = refRepository.readCurrentBranch();
-        String headCommitOid = refRepository.readBranchHead(branch);
-        if (headCommitOid == null || headCommitOid.isBlank()) {
+        String headCommitHash = refRepository.readBranchHead(branch);
+        if (headCommitHash == null || headCommitHash.isBlank()) {
             return Map.of();
         }
-        Commit commit = objectReader.readCommit(headCommitOid);
+        Commit commit = objectReader.readCommit(headCommitHash);
         Tree tree = objectReader.readTree(commit.treeOid());
         return tree.entries();
     }

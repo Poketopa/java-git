@@ -17,9 +17,9 @@ public final class Tree {
         Map<String, String> copy = new HashMap<>();
         for (Map.Entry<String, String> entry : entries.entrySet()) {
             String path = entry.getKey();
-            String oid = entry.getValue();
-            checkEntry(path, oid);
-            copy.put(path, oid);
+            String objectId = entry.getValue();
+            checkEntry(path, objectId);
+            copy.put(path, objectId);
         }
         this.entries = Collections.unmodifiableMap(copy);
     }
@@ -30,11 +30,11 @@ public final class Tree {
         }
     }
 
-    private void checkEntry(String path, String oid) {
+    private void checkEntry(String path, String objectId) {
         if (path == null) {
             throw new IllegalArgumentException(ErrorCode.TREE_ENTRY_PATH_NULL.message());
         }
-        if (oid == null) {
+        if (objectId == null) {
             throw new IllegalArgumentException(ErrorCode.TREE_ENTRY_OID_NULL.message());
         }
     }

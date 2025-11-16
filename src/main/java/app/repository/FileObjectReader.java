@@ -24,8 +24,8 @@ public final class FileObjectReader implements ObjectReader {
     }
 
     @Override
-    public byte[] readRaw(String oid) {
-        Path objectFilePath = buildObjectFilePath(oid);
+    public byte[] readRaw(String objectId) {
+        Path objectFilePath = buildObjectFilePath(objectId);
         if (!Files.exists(objectFilePath)) {
             throw new IllegalArgumentException(ErrorCode.OBJECT_FILE_NOT_FOUND.message());
         }
@@ -37,24 +37,24 @@ public final class FileObjectReader implements ObjectReader {
     }
 
     @Override
-    public Blob readBlob(String oid) {
-        return new Blob(readRaw(oid));
+    public Blob readBlob(String objectId) {
+        return new Blob(readRaw(objectId));
     }
 
     @Override
-    public Tree readTree(String oid) {
-        byte[] bytes = readRaw(oid);
+    public Tree readTree(String objectId) {
+        byte[] bytes = readRaw(objectId);
         String content = new String(bytes, StandardCharsets.UTF_8);
         Map<String, String> entries = parseTreeContent(content);
         return new Tree(entries);
     }
 
     @Override
-    public Commit readCommit(String oid) {
-        byte[] bytes = readRaw(oid);
+    public Commit readCommit(String objectId) {
+        byte[] bytes = readRaw(objectId);
         String content = new String(bytes, StandardCharsets.UTF_8);
         ParsedCommit parsed = parseCommitContent(content);
-        return new Commit(parsed.message, parsed.treeOid, parsed.parentOid, parsed.author);
+        return new Commit(parsed.message, parsed.treeSha, parsed.parentHash, parsed.author);
     }
 
     private Path buildObjectFilePath(String objectHash) {
@@ -96,14 +96,14 @@ public final class FileObjectReader implements ObjectReader {
     }
 
     private static final class ParsedCommit {
-        final String treeOid;
-        final String parentOid;
+        final String treeSha;
+        final String parentHash;
         final String author;
         final String message;
 
-        ParsedCommit(String treeOid, String parentOid, String author, String message) {
-            this.treeOid = treeOid;
-            this.parentOid = parentOid;
+        ParsedCommit(String treeSha, String parentHash, String author, String message) {
+            this.treeSha = treeSha;
+            this.parentHash = parentHash;
             this.author = author;
             this.message = message;
         }
@@ -114,8 +114,8 @@ public final class FileObjectReader implements ObjectReader {
             throw new IllegalArgumentException(ErrorCode.MALFORMED_COMMIT_OBJECT.message());
         }
         String[] lines = content.split("\n");
-        String treeOid = null;
-        String parentOid = null;
+        String treeSha = null;
+        String parentHash = null;
         String author = null;
         int i = 0;
         for (; i < lines.length; i++) {
@@ -125,11 +125,11 @@ public final class FileObjectReader implements ObjectReader {
                 break;
             }
             if (line.startsWith("tree ")) {
-                treeOid = line.substring("tree ".length()).trim();
+                treeSha = line.substring("tree ".length()).trim();
                 continue;
             }
             if (line.startsWith("parent ")) {
-                parentOid = line.substring("parent ".length()).trim();
+                parentHash = line.substring("parent ".length()).trim();
                 continue;
             }
             if (line.startsWith("author ")) {
@@ -148,10 +148,10 @@ public final class FileObjectReader implements ObjectReader {
                 messageBuilder.append('\n');
             }
         }
-        if (treeOid == null || author == null) {
+        if (treeSha == null || author == null) {
             throw new IllegalArgumentException(ErrorCode.MALFORMED_COMMIT_OBJECT.message());
         }
-        return new ParsedCommit(treeOid, parentOid, author, messageBuilder.toString());
+        return new ParsedCommit(treeSha, parentHash, author, messageBuilder.toString());
     }
 }
 

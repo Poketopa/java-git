@@ -58,7 +58,7 @@
 - [x] Domain 객체 검증
     - [x] Blob 객체: null 및 빈 파일 검증
     - [x] Index 객체: null 및 빈 staged files 검증
-- [x] Index 내부 entry: path 및 oid null 검증
+- [x] Index 내부 entry: path 및 sha null 검증
     - [x] Tree 객체: null entries 및 entry 검증
     - [x] Commit 객체: message, treeOid, author null 및 빈 값 검증
     - [x] Head 객체: refName null 및 빈 값 검증
@@ -184,7 +184,7 @@
 #### Index:
 - Git Index (스테이징 영역)
 - 파일 경로와 SHA-1 해시의 매핑 저장
-- Map<String, String> 형태 (path -> oid)
+- Map<String, String> 형태 (path -> sha)
 - null 및 빈 entry 검증
 - 방어적 복사로 불변성 보장
 #### Tree:

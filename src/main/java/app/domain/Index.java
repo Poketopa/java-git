@@ -17,9 +17,9 @@ public final class Index {
         Map<String, String> copy = new HashMap<>();
         for (Map.Entry<String, String> stagedFile : stagedFiles.entrySet()) {
             String path = stagedFile.getKey();
-            String oid = stagedFile.getValue();
-            checkStagedFileNull(path, oid);
-            copy.put(path, oid);
+            String objectId = stagedFile.getValue();
+            checkStagedFileNull(path, objectId);
+            copy.put(path, objectId);
         }
         this.stagedFiles = Collections.unmodifiableMap(copy);
     }
@@ -34,11 +34,11 @@ public final class Index {
         }
     }
 
-    private void checkStagedFileNull(String path, String oid) {
+    private void checkStagedFileNull(String path, String objectId) {
         if (path == null) {
             throw new IllegalArgumentException(ErrorCode.INDEX_STAGED_FILE_PATH_NULL.message());
         }
-        if (oid == null) {
+        if (objectId == null) {
             throw new IllegalArgumentException(ErrorCode.INDEX_STAGED_FILE_OID_NULL.message());
         }
     }

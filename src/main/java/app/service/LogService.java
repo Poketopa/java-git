@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 public final class LogService {
-    public record LogEntry(String oid, String author, String dateTimeIso, String message) { }
+    public record LogEntry(String hash, String author, String dateTimeIso, String message) { }
 
     private static final DateTimeFormatter ISO_FORMATTER =
             DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault());
@@ -28,14 +28,14 @@ public final class LogService {
 
     public List<LogEntry> list() {
         String branch = refRepository.readCurrentBranch();
-        String oid = refRepository.readBranchHead(branch);
+        String commitHash = refRepository.readBranchHead(branch);
         List<LogEntry> entries = new ArrayList<>();
-        while (oid != null && !oid.isBlank()) {
-            CommitParsed parsed = parseCommitContent(objectReader.readRaw(oid));
+        while (commitHash != null && !commitHash.isBlank()) {
+            CommitParsed parsed = parseCommitContent(objectReader.readRaw(commitHash));
             String dateIso = parsed.dateMillis != null ? ISO_FORMATTER.format(Instant.ofEpochMilli(parsed.dateMillis)) : "";
             String messageFirstLine = firstLine(parsed.message);
-            entries.add(new LogEntry(oid, parsed.author, dateIso, messageFirstLine));
-            oid = parsed.parentOid;
+            entries.add(new LogEntry(commitHash, parsed.author, dateIso, messageFirstLine));
+            commitHash = parsed.parentHash;
         }
         return List.copyOf(entries);
     }
@@ -44,23 +44,23 @@ public final class LogService {
         if (message == null || message.isBlank()) {
             return "";
         }
-        int idx = message.indexOf('\n');
-        if (idx < 0) {
+        int index = message.indexOf('\n');
+        if (index < 0) {
             return message;
         }
-        return message.substring(0, idx);
+        return message.substring(0, index);
     }
 
     private static final class CommitParsed {
-        final String treeOid;
-        final String parentOid;
+        final String treeSha;
+        final String parentHash;
         final String author;
         final Long dateMillis;
         final String message;
 
-        CommitParsed(String treeOid, String parentOid, String author, Long dateMillis, String message) {
-            this.treeOid = treeOid;
-            this.parentOid = parentOid;
+        CommitParsed(String treeSha, String parentHash, String author, Long dateMillis, String message) {
+            this.treeSha = treeSha;
+            this.parentHash = parentHash;
             this.author = author;
             this.dateMillis = dateMillis;
             this.message = message;
@@ -73,8 +73,8 @@ public final class LogService {
         }
         String content = new String(bytes, StandardCharsets.UTF_8);
         String[] lines = content.split("\n");
-        String treeOid = null;
-        String parentOid = null;
+        String treeSha = null;
+        String parentHash = null;
         String author = null;
         Long dateMillis = null;
         int i = 0;
@@ -85,11 +85,11 @@ public final class LogService {
                 break;
             }
             if (line.startsWith("tree ")) {
-                treeOid = line.substring("tree ".length()).trim();
+                treeSha = line.substring("tree ".length()).trim();
                 continue;
             }
             if (line.startsWith("parent ")) {
-                parentOid = line.substring("parent ".length()).trim();
+                parentHash = line.substring("parent ".length()).trim();
                 continue;
             }
             if (line.startsWith("author ")) {
@@ -111,10 +111,10 @@ public final class LogService {
                 messageBuilder.append('\n');
             }
         }
-        if (treeOid == null || author == null) {
+        if (treeSha == null || author == null) {
             throw new IllegalArgumentException(ErrorCode.MALFORMED_COMMIT_OBJECT.message());
         }
-        return new CommitParsed(treeOid, parentOid, author, dateMillis, messageBuilder.toString());
+        return new CommitParsed(treeSha, parentHash, author, dateMillis, messageBuilder.toString());
     }
 }
 
