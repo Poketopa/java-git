@@ -5,6 +5,7 @@ import main.java.app.service.CommitService;
 import main.java.app.service.InitService;
 import main.java.app.service.StatusService;
 import main.java.app.service.LogService;
+import main.java.app.service.BranchService;
 import main.java.app.util.CommandLineParser;
 import main.java.app.view.OutputView;
 
@@ -23,15 +24,17 @@ public final class GitController {
     private final CommitService commitService;
     private final StatusService statusService;
     private final LogService logService;
+    private final BranchService branchService;
     private final OutputView outputView;
     private final Map<String, Command> commandHandlers;
 
-    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, OutputView outputView) {
+    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, OutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
         this.addService = Objects.requireNonNull(addService, "addService");
         this.commitService = Objects.requireNonNull(commitService, "commitService");
         this.statusService = Objects.requireNonNull(statusService, "statusService");
         this.logService = Objects.requireNonNull(logService, "logService");
+        this.branchService = Objects.requireNonNull(branchService, "branchService");
         this.outputView = Objects.requireNonNull(outputView, "outputView");
         this.commandHandlers = new HashMap<>();
         registerCommandHandlers();
@@ -81,6 +84,22 @@ public final class GitController {
         this.commandHandlers.put("log", args -> {
             java.util.List<LogService.LogEntry> entries = logService.list();
             outputView.showLog(entries);
+        });
+        this.commandHandlers.put("branch", args -> {
+            if (args.length == 1) {
+                outputView.showBranches(branchService.list());
+                return;
+            }
+            if (args.length == 2) {
+                try {
+                    branchService.create(args[1]);
+                    outputView.showBranchCreated(args[1]);
+                } catch (IllegalArgumentException e) {
+                    outputView.showBranchAlreadyExists(args[1]);
+                }
+                return;
+            }
+            showUsage();
         });
     }
 
