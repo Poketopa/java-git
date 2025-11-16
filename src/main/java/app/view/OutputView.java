@@ -58,6 +58,22 @@ public final class OutputView {
         }
     }
 
+    public void showBranches(java.util.List<String> names) {
+        System.out.println(Messages.BRANCH_LIST_HEADER);
+        if (names == null || names.isEmpty()) {
+            return;
+        }
+        names.forEach(n -> System.out.println(Messages.STATUS_INDENT + n));
+    }
+
+    public void showBranchCreated(String name) {
+        System.out.println(Messages.BRANCH_CREATED + name);
+    }
+
+    public void showBranchAlreadyExists(String name) {
+        System.err.println(Messages.BRANCH_ALREADY_EXISTS + name);
+    }
+
     public void showLog(java.util.List<LogService.LogEntry> entries) {
         if (entries == null || entries.isEmpty()) {
             System.out.println(Messages.LOG_NO_COMMITS);
