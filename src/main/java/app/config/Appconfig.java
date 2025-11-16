@@ -16,6 +16,7 @@ import main.java.app.service.FileSystemInitService;
 import main.java.app.service.InitService;
 import main.java.app.service.StatusService;
 import main.java.app.service.LogService;
+import main.java.app.service.BranchService;
 
 import java.nio.file.Path;
 import java.util.Objects;
@@ -28,7 +29,7 @@ public final class Appconfig {
     }
 
     public GitController gitController() {
-        return new GitController(initService(), addService(), commitService(), statusService(), logService(), outputView());
+        return new GitController(initService(), addService(), commitService(), statusService(), logService(), branchService(), outputView());
     }
 
     private InitService initService() {
@@ -63,6 +64,11 @@ public final class Appconfig {
 
     private OutputView outputView() {
         return new OutputView();
+    }
+
+    private BranchService branchService() {
+        RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
+        return new BranchService(refRepository);
     }
 }
 
