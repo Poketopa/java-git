@@ -24,6 +24,10 @@ public final class Messages {
     public static final String STATUS_LABEL_MODIFIED = "modified: ";
     public static final String STATUS_LABEL_DELETED = "deleted: ";
 
+    public static final String LOG_NO_COMMITS = "no commits yet";
+    public static final String LOG_LABEL_AUTHOR = "author: ";
+    public static final String LOG_LABEL_DATE = "date: ";
+
     private Messages() {
     }
 }
