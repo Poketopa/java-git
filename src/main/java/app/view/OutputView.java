@@ -1,6 +1,7 @@
 package main.java.app.view;
 
 import main.java.app.service.StatusService;
+import main.java.app.service.LogService;
 
 public final class OutputView {
     public void showUsage() {
@@ -54,6 +55,20 @@ public final class OutputView {
         if (hasUntracked) {
             System.out.println(Messages.STATUS_SECTION_UNTRACKED);
             result.untracked().forEach(path -> System.out.println(Messages.STATUS_INDENT + path));
+        }
+    }
+
+    public void showLog(java.util.List<LogService.LogEntry> entries) {
+        if (entries == null || entries.isEmpty()) {
+            System.out.println(Messages.LOG_NO_COMMITS);
+            return;
+        }
+        for (LogService.LogEntry e : entries) {
+            String shortOid = e.oid().length() >= 7 ? e.oid().substring(0, 7) : e.oid();
+            System.out.println(shortOid + " " + e.message());
+            System.out.println(Messages.STATUS_INDENT + Messages.LOG_LABEL_AUTHOR + e.author());
+            System.out.println(Messages.STATUS_INDENT + Messages.LOG_LABEL_DATE + e.dateTimeIso());
+            System.out.println();
         }
     }
 }
