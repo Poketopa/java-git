@@ -58,7 +58,7 @@
 - [x] Domain 객체 검증
     - [x] Blob 객체: null 및 빈 파일 검증
     - [x] Index 객체: null 및 빈 staged files 검증
-    - [x] Index 내부 entry: path 및 oid null 검증
+- [x] Index 내부 entry: path 및 oid null 검증
     - [x] Tree 객체: null entries 및 entry 검증
     - [x] Commit 객체: message, treeOid, author null 및 빈 값 검증
     - [x] Head 객체: refName null 및 빈 값 검증
@@ -82,7 +82,7 @@
 - [ ] git push
 - [ ] git pull
 - [x] git status
-- [ ] git log
+- [x] git log
 - [ ] git branch
 - [ ] git checkout
 - [ ] git merge
@@ -102,7 +102,7 @@
 - [x] add: 파일을 스테이징 영역에 추가
 - [x] commit: 스테이징된 파일들을 커밋
 - [x] status: 현재 상태 확인 (Working ↔ Index ↔ HEAD 3-way 비교)
-- [ ] log: 커밋 히스토리 출력
+- [x] log: 커밋 히스토리 출력
 - [ ] branch: 브랜치 생성/조회
 - [ ] checkout: 브랜치 전환
 - [ ] merge: 브랜치 병합
@@ -115,7 +115,7 @@
 - [x] 기본 출력 메시지
 - [x] 커밋 명령어 옵션 파싱 (-m, -a)
 - [x] 상세한 상태 출력 (status)
-- [ ] 커밋 로그 포맷팅 (log)
+- [x] 커밋 로그 포맷팅 (log)
 
 ### 예외처리
 - [x] ErrorCode enum 구현
@@ -184,13 +184,13 @@
 #### Index:
 - Git Index (스테이징 영역)
 - 파일 경로와 SHA-1 해시의 매핑 저장
-- Map<String, String> 형태 (path -> sha)
+- Map<String, String> 형태 (path -> oid)
 - null 및 빈 entry 검증
 - 방어적 복사로 불변성 보장
 #### Tree:
 - Git Tree 객체 (디렉토리 구조)
 - 파일 경로와 SHA-1 해시의 매핑 저장
-- Map<String, String> 형태 (path -> oid)
+- Map<String, String> 형태 (path -> sha)
 - null entries 및 entry 검증
 - 방어적 복사로 불변성 보장
 #### Commit:
