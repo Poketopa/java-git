@@ -114,6 +114,27 @@ public final class OutputView {
         System.err.println(Messages.CHECKOUT_NOT_FOUND + branch);
     }
 
+    // merge 출력
+    public void showMergeUsage() {
+        System.out.println(Messages.MERGE_USAGE);
+    }
+
+    public void showMergeAlreadyUpToDate() {
+        System.out.println(Messages.MERGE_ALREADY_UP_TO_DATE);
+    }
+
+    public void showMergeFastForward(String sourceBranch) {
+        System.out.println(Messages.MERGE_FAST_FORWARD + sourceBranch);
+    }
+
+    public void showMergeBranchNotFound(String branch) {
+        System.err.println(Messages.MERGE_BRANCH_NOT_FOUND + branch);
+    }
+
+    public void showMergeNotFastForward() {
+        System.err.println(Messages.MERGE_NOT_FAST_FORWARD);
+    }
+
     // log 출력 포맷팅 (요약)
     public void showLog(java.util.List<LogService.LogEntry> entries) {
         if (entries == null || entries.isEmpty()) {
