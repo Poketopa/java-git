@@ -22,6 +22,9 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// CLI 컨트롤러
+// - 단일 명령 실행(run)과 인터랙티브 콘솔(runConsole) 제공
+// - 명령 파싱 후 Service에 위임
 public final class GitController {
     private interface Command {
         void execute(String[] args);
@@ -50,6 +53,7 @@ public final class GitController {
         registerCommandHandlers();
     }
 
+    // 한 번에 하나의 명령을 실행
     public void run(String[] args) {
         if (args == null || args.length == 0) {
             showUsage();
@@ -63,6 +67,9 @@ public final class GitController {
         handler.execute(args);
     }
 
+    // 인터랙티브 콘솔 (REPL)
+    // - 'git' 프리픽스 강제
+    // - help/usage, exit/quit 지원
     public void runConsole() {
         outputView.showWelcome();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -108,6 +115,9 @@ public final class GitController {
         return input.equalsIgnoreCase(a) || input.equalsIgnoreCase(b);
     }
 
+    // 간단한 토크나이저
+    // - 공백 기준 분리
+    // - 따옴표("..."/'...')로 감싼 구간은 하나의 토큰으로 취급
     private static String[] tokenize(String line) {
         // Splits by spaces but keeps quoted segments ("..."/'...') together
         Pattern tokenPattern = Pattern.compile("\"([^\"]*)\"|'([^']*)'|\\S+");

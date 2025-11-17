@@ -4,6 +4,7 @@ import main.java.app.service.StatusService;
 import main.java.app.service.LogService;
 
 public final class OutputView {
+    // REPL 안내/프롬프트/종료/에러 출력
     public void showWelcome() {
         System.out.println(Messages.REPL_WELCOME);
     }
@@ -25,6 +26,7 @@ public final class OutputView {
         System.err.println(Messages.REPL_INPUT_READ_ERROR + detail);
     }
 
+    // 사용법 출력
     public void showUsage() {
         System.out.println(Messages.USAGE_HEADER);
         System.out.println(Messages.USAGE_INIT);
@@ -52,6 +54,7 @@ public final class OutputView {
         System.err.println(Messages.COMMIT_USAGE_ERROR);
     }
 
+    // status 출력 포맷팅
     public void showStatus(StatusService.StatusResult result) {
         boolean hasStaged = !(result.stagedAdded().isEmpty() && result.stagedModified().isEmpty() && result.stagedDeleted().isEmpty());
         boolean hasNotStaged = !(result.modifiedNotStaged().isEmpty() && result.deletedNotStaged().isEmpty());
@@ -111,6 +114,7 @@ public final class OutputView {
         System.err.println(Messages.CHECKOUT_NOT_FOUND + branch);
     }
 
+    // log 출력 포맷팅 (요약)
     public void showLog(java.util.List<LogService.LogEntry> entries) {
         if (entries == null || entries.isEmpty()) {
             System.out.println(Messages.LOG_NO_COMMITS);
