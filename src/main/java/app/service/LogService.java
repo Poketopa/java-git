@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+// 커밋 로그 조회
+// - HEAD에서 부모 체인을 따라가며 요약 정보(hash/author/date/message) 생성
+// - Commit raw bytes를 파싱하여 필요한 헤더/본문만 사용
 public final class LogService {
     public record LogEntry(String hash, String author, String dateTimeIso, String message) { }
 
@@ -27,9 +30,11 @@ public final class LogService {
     }
 
     public List<LogEntry> list() {
+        // 1) 현재 브랜치 HEAD 커밋부터 시작
         String branch = refRepository.readCurrentBranch();
         String commitHash = refRepository.readBranchHead(branch);
         List<LogEntry> entries = new ArrayList<>();
+        // 2) 부모를 따라가며 로그 누적
         while (commitHash != null && !commitHash.isBlank()) {
             CommitParsed parsed = parseCommitContent(objectReader.readRaw(commitHash));
             String dateIso = parsed.dateMillis != null ? ISO_FORMATTER.format(Instant.ofEpochMilli(parsed.dateMillis)) : "";
@@ -40,6 +45,7 @@ public final class LogService {
         return List.copyOf(entries);
     }
 
+    // 메시지 첫 줄만 추출 (git log 요약 형태)
     private String firstLine(String message) {
         if (message == null || message.isBlank()) {
             return "";
@@ -67,6 +73,7 @@ public final class LogService {
         }
     }
 
+    // Commit 직렬화 포맷을 읽어 필요한 필드만 파싱
     private CommitParsed parseCommitContent(byte[] bytes) {
         if (bytes == null || bytes.length == 0) {
             throw new IllegalArgumentException(ErrorCode.MALFORMED_COMMIT_OBJECT.message());
