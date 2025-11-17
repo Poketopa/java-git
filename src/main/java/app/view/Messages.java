@@ -38,6 +38,13 @@ public final class Messages {
     public static final String CHECKOUT_DIRTY = "작업 트리가 깨끗하지 않습니다. 변경 사항을 정리하세요.";
     public static final String CHECKOUT_NOT_FOUND = "존재하지 않는 브랜치입니다: ";
 
+    // merge
+    public static final String MERGE_USAGE = "사용법: git merge <브랜치>";
+    public static final String MERGE_ALREADY_UP_TO_DATE = "Already up to date.";
+    public static final String MERGE_FAST_FORWARD = "Fast-forward: ";
+    public static final String MERGE_BRANCH_NOT_FOUND = "존재하지 않는 브랜치입니다: ";
+    public static final String MERGE_NOT_FAST_FORWARD = "이 병합은 fast-forward로 처리할 수 없습니다.";
+
     public static final String REPL_WELCOME = "Interactive mode started. Type 'help' for usage, 'exit' to quit.";
     public static final String REPL_PROMPT = "java-git> ";
     public static final String REPL_BYE = "Bye.";
