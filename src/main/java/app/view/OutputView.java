@@ -4,6 +4,27 @@ import main.java.app.service.StatusService;
 import main.java.app.service.LogService;
 
 public final class OutputView {
+    public void showWelcome() {
+        System.out.println(Messages.REPL_WELCOME);
+    }
+
+    public void showPrompt() {
+        System.out.print(Messages.REPL_PROMPT);
+    }
+
+    public void showBye() {
+        System.out.println(Messages.REPL_BYE);
+    }
+
+    public void showRequireGitPrefix() {
+        System.err.println(Messages.REPL_REQUIRE_GIT_PREFIX);
+        showUsage();
+    }
+
+    public void showInputReadError(String detail) {
+        System.err.println(Messages.REPL_INPUT_READ_ERROR + detail);
+    }
+
     public void showUsage() {
         System.out.println(Messages.USAGE_HEADER);
         System.out.println(Messages.USAGE_INIT);
