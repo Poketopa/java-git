@@ -38,6 +38,12 @@ public final class Messages {
     public static final String CHECKOUT_DIRTY = "작업 트리가 깨끗하지 않습니다. 변경 사항을 정리하세요.";
     public static final String CHECKOUT_NOT_FOUND = "존재하지 않는 브랜치입니다: ";
 
+    public static final String REPL_WELCOME = "Interactive mode started. Type 'help' for usage, 'exit' to quit.";
+    public static final String REPL_PROMPT = "java-git> ";
+    public static final String REPL_BYE = "Bye.";
+    public static final String REPL_REQUIRE_GIT_PREFIX = "명령은 'git'으로 시작해야 합니다. 예: git init";
+    public static final String REPL_INPUT_READ_ERROR = "[ERROR] 입력을 읽는 데 실패했습니다: ";
+
     private Messages() {
     }
 }
