@@ -10,10 +10,17 @@ import main.java.app.service.CheckoutService;
 import main.java.app.util.CommandLineParser;
 import main.java.app.view.OutputView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class GitController {
     private interface Command {
@@ -54,6 +61,70 @@ public final class GitController {
             return;
         }
         handler.execute(args);
+    }
+
+    public void runConsole() {
+        outputView.showWelcome();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            while (true) {
+                outputView.showPrompt();
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+                line = line.trim();
+                if (line.isEmpty()) {
+                    continue;
+                }
+                if (equalsIgnoreCaseAny(line, "exit", "quit")) {
+                    outputView.showBye();
+                    break;
+                }
+                if (equalsIgnoreCaseAny(line, "help", "usage")) {
+                    showUsage();
+                    continue;
+                }
+                String[] parsedArgs = tokenize(line);
+                if (parsedArgs.length == 0) {
+                    continue;
+                }
+                if (!"git".equals(parsedArgs[0])) {
+                    outputView.showRequireGitPrefix();
+                    continue;
+                }
+                if (parsedArgs.length == 1) {
+                    showUsage();
+                    continue;
+                }
+                String[] commandArgs = Arrays.copyOfRange(parsedArgs, 1, parsedArgs.length);
+                run(commandArgs);
+            }
+        } catch (IOException e) {
+            outputView.showInputReadError(e.getMessage());
+        }
+    }
+
+    private static boolean equalsIgnoreCaseAny(String input, String a, String b) {
+        return input.equalsIgnoreCase(a) || input.equalsIgnoreCase(b);
+    }
+
+    private static String[] tokenize(String line) {
+        // Splits by spaces but keeps quoted segments ("..."/'...') together
+        Pattern tokenPattern = Pattern.compile("\"([^\"]*)\"|'([^']*)'|\\S+");
+        Matcher matcher = tokenPattern.matcher(line);
+        List<String> tokens = new ArrayList<>();
+        while (matcher.find()) {
+            String token;
+            if (matcher.group(1) != null) {
+                token = matcher.group(1);
+            } else if (matcher.group(2) != null) {
+                token = matcher.group(2);
+            } else {
+                token = matcher.group();
+            }
+            tokens.add(token);
+        }
+        return tokens.toArray(new String[0]);
     }
 
     private void registerCommandHandlers() {
