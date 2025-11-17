@@ -18,6 +18,7 @@ import main.java.app.service.StatusService;
 import main.java.app.service.LogService;
 import main.java.app.service.BranchService;
 import main.java.app.service.CheckoutService;
+import main.java.app.service.MergeService;
 
 import java.nio.file.Path;
 import java.util.Objects;
@@ -32,7 +33,7 @@ public final class Appconfig {
     }
 
     public GitController gitController() {
-        return new GitController(initService(), addService(), commitService(), statusService(), logService(), branchService(), checkoutService(), outputView());
+        return new GitController(initService(), addService(), commitService(), statusService(), logService(), branchService(), checkoutService(), mergeService(), outputView());
     }
 
     private InitService initService() {
@@ -77,6 +78,12 @@ public final class Appconfig {
     private CheckoutService checkoutService() {
         RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
         return new CheckoutService(refRepository, statusService());
+    }
+
+    private MergeService mergeService() {
+        RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
+        ObjectReader objectReader = new FileObjectReader(rootDirectoryPath);
+        return new MergeService(refRepository, objectReader);
     }
 }
 
