@@ -7,6 +7,7 @@ import main.java.app.service.StatusService;
 import main.java.app.service.LogService;
 import main.java.app.service.BranchService;
 import main.java.app.service.CheckoutService;
+import main.java.app.service.MergeService;
 import main.java.app.util.CommandLineParser;
 import main.java.app.view.OutputView;
 
@@ -37,10 +38,11 @@ public final class GitController {
     private final LogService logService;
     private final BranchService branchService;
     private final CheckoutService checkoutService;
+    private final MergeService mergeService;
     private final OutputView outputView;
     private final Map<String, Command> commandHandlers;
 
-    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, CheckoutService checkoutService, OutputView outputView) {
+    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, CheckoutService checkoutService, MergeService mergeService, OutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
         this.addService = Objects.requireNonNull(addService, "addService");
         this.commitService = Objects.requireNonNull(commitService, "commitService");
@@ -48,6 +50,7 @@ public final class GitController {
         this.logService = Objects.requireNonNull(logService, "logService");
         this.branchService = Objects.requireNonNull(branchService, "branchService");
         this.checkoutService = Objects.requireNonNull(checkoutService, "checkoutService");
+        this.mergeService = Objects.requireNonNull(mergeService, "mergeService");
         this.outputView = Objects.requireNonNull(outputView, "outputView");
         this.commandHandlers = new HashMap<>();
         registerCommandHandlers();
@@ -196,6 +199,20 @@ public final class GitController {
                 case SUCCESS -> outputView.showCheckoutSuccess(branch);
                 case BRANCH_NOT_FOUND -> outputView.showCheckoutNotFound(branch);
                 case WORKING_TREE_NOT_CLEAN -> outputView.showCheckoutDirty();
+            }
+        });
+        this.commandHandlers.put("merge", args -> {
+            if (args.length != 2) {
+                outputView.showMergeUsage();
+                return;
+            }
+            String targetBranch = args[1];
+            MergeService.MergeResult result = mergeService.merge(targetBranch);
+            switch (result) {
+                case ALREADY_UP_TO_DATE -> outputView.showMergeAlreadyUpToDate();
+                case FAST_FORWARD -> outputView.showMergeFastForward(targetBranch);
+                case BRANCH_NOT_FOUND -> outputView.showMergeBranchNotFound(targetBranch);
+                case NOT_FAST_FORWARD -> outputView.showMergeNotFastForward();
             }
         });
     }
