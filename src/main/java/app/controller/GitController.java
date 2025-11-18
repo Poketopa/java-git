@@ -8,6 +8,8 @@ import main.java.app.service.LogService;
 import main.java.app.service.BranchService;
 import main.java.app.service.CheckoutService;
 import main.java.app.service.MergeService;
+import main.java.app.service.PushService;
+import main.java.app.service.PullService;
 import main.java.app.util.CommandLineParser;
 import main.java.app.view.OutputView;
 
@@ -27,6 +29,7 @@ import java.util.regex.Pattern;
 // - 단일 명령 실행(run)과 인터랙티브 콘솔(runConsole) 제공
 // - 명령 파싱 후 Service에 위임
 public final class GitController {
+    private static final Pattern TOKEN_PATTERN = Pattern.compile("\"([^\"]*)\"|'([^']*)'|\\S+");
     private interface Command {
         void execute(String[] args);
     }
@@ -40,9 +43,11 @@ public final class GitController {
     private final CheckoutService checkoutService;
     private final MergeService mergeService;
     private final OutputView outputView;
+    private final PushService pushService;
+    private final PullService pullService;
     private final Map<String, Command> commandHandlers;
 
-    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, CheckoutService checkoutService, MergeService mergeService, OutputView outputView) {
+    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, CheckoutService checkoutService, MergeService mergeService, PushService pushService, PullService pullService, OutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
         this.addService = Objects.requireNonNull(addService, "addService");
         this.commitService = Objects.requireNonNull(commitService, "commitService");
@@ -51,6 +56,8 @@ public final class GitController {
         this.branchService = Objects.requireNonNull(branchService, "branchService");
         this.checkoutService = Objects.requireNonNull(checkoutService, "checkoutService");
         this.mergeService = Objects.requireNonNull(mergeService, "mergeService");
+        this.pushService = Objects.requireNonNull(pushService, "pushService");
+        this.pullService = Objects.requireNonNull(pullService, "pullService");
         this.outputView = Objects.requireNonNull(outputView, "outputView");
         this.commandHandlers = new HashMap<>();
         registerCommandHandlers();
@@ -123,19 +130,20 @@ public final class GitController {
     // - 따옴표("..."/'...')로 감싼 구간은 하나의 토큰으로 취급
     private static String[] tokenize(String line) {
         // Splits by spaces but keeps quoted segments ("..."/'...') together
-        Pattern tokenPattern = Pattern.compile("\"([^\"]*)\"|'([^']*)'|\\S+");
-        Matcher matcher = tokenPattern.matcher(line);
+        Matcher matcher = TOKEN_PATTERN.matcher(line);
         List<String> tokens = new ArrayList<>();
         while (matcher.find()) {
-            String token;
-            if (matcher.group(1) != null) {
-                token = matcher.group(1);
-            } else if (matcher.group(2) != null) {
-                token = matcher.group(2);
-            } else {
-                token = matcher.group();
+            String quotedDouble = matcher.group(1);
+            if (quotedDouble != null) {
+                tokens.add(quotedDouble);
+                continue;
             }
-            tokens.add(token);
+            String quotedSingle = matcher.group(2);
+            if (quotedSingle != null) {
+                tokens.add(quotedSingle);
+                continue;
+            }
+            tokens.add(matcher.group());
         }
         return tokens.toArray(new String[0]);
     }
@@ -213,6 +221,36 @@ public final class GitController {
                 case FAST_FORWARD -> outputView.showMergeFastForward(targetBranch);
                 case BRANCH_NOT_FOUND -> outputView.showMergeBranchNotFound(targetBranch);
                 case NOT_FAST_FORWARD -> outputView.showMergeNotFastForward();
+            }
+        });
+        this.commandHandlers.put("push", args -> {
+            if (args.length != 3) {
+                outputView.showPushUsage();
+                return;
+            }
+            java.nio.file.Path remote = java.nio.file.Path.of(args[1]);
+            String branch = args[2];
+            PushService.PushResult result = pushService.push(remote, branch);
+            switch (result) {
+                case SUCCESS -> outputView.showPushSuccess(branch);
+                case ALREADY_UP_TO_DATE -> outputView.showPushUpToDate();
+                case REMOTE_REJECTED_NON_FF -> outputView.showPushRejectedNonFastForward();
+                case LOCAL_NO_COMMITS -> outputView.showPushLocalNoCommits();
+            }
+        });
+        this.commandHandlers.put("pull", args -> {
+            if (args.length != 3) {
+                outputView.showPullUsage();
+                return;
+            }
+            java.nio.file.Path remote = java.nio.file.Path.of(args[1]);
+            String branch = args[2];
+            PullService.PullResult result = pullService.pull(remote, branch);
+            switch (result) {
+                case SUCCESS -> outputView.showPullSuccess(branch);
+                case ALREADY_UP_TO_DATE -> outputView.showPullUpToDate();
+                case REMOTE_NO_COMMITS -> outputView.showPullRemoteNoCommits();
+                case NOT_FAST_FORWARD -> outputView.showPullNotFastForward();
             }
         });
     }
