@@ -135,6 +135,40 @@ public final class OutputView {
         System.err.println(Messages.MERGE_NOT_FAST_FORWARD);
     }
 
+    // push
+    public void showPushUsage() {
+        System.out.println(Messages.PUSH_USAGE);
+    }
+    public void showPushSuccess(String branch) {
+        System.out.println(Messages.PUSH_SUCCESS + branch);
+    }
+    public void showPushUpToDate() {
+        System.out.println(Messages.PUSH_UP_TO_DATE);
+    }
+    public void showPushRejectedNonFastForward() {
+        System.err.println(Messages.PUSH_REJECTED_NON_FF);
+    }
+    public void showPushLocalNoCommits() {
+        System.err.println(Messages.PUSH_LOCAL_NO_COMMITS);
+    }
+
+    // pull
+    public void showPullUsage() {
+        System.out.println(Messages.PULL_USAGE);
+    }
+    public void showPullSuccess(String branch) {
+        System.out.println(Messages.PULL_SUCCESS + branch);
+    }
+    public void showPullUpToDate() {
+        System.out.println(Messages.PULL_UP_TO_DATE);
+    }
+    public void showPullRemoteNoCommits() {
+        System.out.println(Messages.PULL_REMOTE_NO_COMMITS);
+    }
+    public void showPullNotFastForward() {
+        System.err.println(Messages.PULL_NOT_FAST_FORWARD);
+    }
+
     // log 출력 포맷팅 (요약)
     public void showLog(java.util.List<LogService.LogEntry> entries) {
         if (entries == null || entries.isEmpty()) {
