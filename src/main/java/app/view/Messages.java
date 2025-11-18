@@ -45,6 +45,19 @@ public final class Messages {
     public static final String MERGE_BRANCH_NOT_FOUND = "존재하지 않는 브랜치입니다: ";
     public static final String MERGE_NOT_FAST_FORWARD = "이 병합은 fast-forward로 처리할 수 없습니다.";
 
+    // push/pull (로컬 파일시스템 remote)
+    public static final String PUSH_USAGE = "사용법: git push <remote-dir> <브랜치>";
+    public static final String PUSH_SUCCESS = "푸시 완료: ";
+    public static final String PUSH_UP_TO_DATE = "원격이 이미 최신 상태입니다.";
+    public static final String PUSH_REJECTED_NON_FF = "푸시 거부: fast-forward가 아닙니다.";
+    public static final String PUSH_LOCAL_NO_COMMITS = "로컬에 푸시할 커밋이 없습니다.";
+
+    public static final String PULL_USAGE = "사용법: git pull <remote-dir> <브랜치>";
+    public static final String PULL_SUCCESS = "풀 완료: ";
+    public static final String PULL_UP_TO_DATE = "이미 최신 상태입니다.";
+    public static final String PULL_REMOTE_NO_COMMITS = "원격에 가져올 커밋이 없습니다.";
+    public static final String PULL_NOT_FAST_FORWARD = "풀 실패: fast-forward로 가져올 수 없습니다.";
+
     public static final String REPL_WELCOME = "Interactive mode started. Type 'help' for usage, 'exit' to quit.";
     public static final String REPL_PROMPT = "java-git> ";
     public static final String REPL_BYE = "Bye.";
