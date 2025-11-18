@@ -19,6 +19,7 @@ public final class MergeService {
 
     private final RefRepository refRepository;
     private final ObjectReader objectReader;
+    private static final String PARENT_PREFIX = "parent ";
 
     public MergeService(RefRepository refRepository, ObjectReader objectReader) {
         this.refRepository = Objects.requireNonNull(refRepository, "refRepository");
@@ -78,8 +79,8 @@ public final class MergeService {
         String content = new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
         String[] lines = content.split("\n");
         for (String line : lines) {
-            if (line.startsWith("parent ")) {
-                return line.substring("parent ".length()).trim();
+            if (line.startsWith(PARENT_PREFIX)) {
+                return line.substring(PARENT_PREFIX.length()).trim();
             }
             if (line.isBlank()) {
                 // 헤더 종료 이후는 메시지이므로 중단
