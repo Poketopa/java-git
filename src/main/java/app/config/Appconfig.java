@@ -19,6 +19,8 @@ import main.java.app.service.LogService;
 import main.java.app.service.BranchService;
 import main.java.app.service.CheckoutService;
 import main.java.app.service.MergeService;
+import main.java.app.service.PushService;
+import main.java.app.service.PullService;
 
 import java.nio.file.Path;
 import java.util.Objects;
@@ -33,7 +35,7 @@ public final class Appconfig {
     }
 
     public GitController gitController() {
-        return new GitController(initService(), addService(), commitService(), statusService(), logService(), branchService(), checkoutService(), mergeService(), outputView());
+        return new GitController(initService(), addService(), commitService(), statusService(), logService(), branchService(), checkoutService(), mergeService(), pushService(), pullService(), outputView());
     }
 
     private InitService initService() {
@@ -84,6 +86,18 @@ public final class Appconfig {
         RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
         ObjectReader objectReader = new FileObjectReader(rootDirectoryPath);
         return new MergeService(refRepository, objectReader);
+    }
+
+    private PushService pushService() {
+        RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
+        ObjectReader objectReader = new FileObjectReader(rootDirectoryPath);
+        return new PushService(refRepository, objectReader, rootDirectoryPath);
+    }
+
+    private PullService pullService() {
+        RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
+        ObjectReader objectReader = new FileObjectReader(rootDirectoryPath);
+        return new PullService(refRepository, objectReader, rootDirectoryPath);
     }
 }
 
