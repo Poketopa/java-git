@@ -69,7 +69,13 @@ public final class FileRefRepository implements RefRepository {
     public void updateBranchHead(String branchName, String commitSha) {
         Path branchFilePath = branchFilePath(branchName);
         try {
-            Files.writeString(branchFilePath, commitSha, StandardCharsets.UTF_8);
+            Path parent = branchFilePath.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+            Path tmp = branchFilePath.resolveSibling(branchFilePath.getFileName().toString() + ".tmp");
+            Files.writeString(tmp, commitSha == null ? "" : commitSha, StandardCharsets.UTF_8);
+            Files.move(tmp, branchFilePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING, java.nio.file.StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
             throw new IllegalArgumentException(ErrorCode.INDEX_FILE_WRITE_FAILED.message());
         }
