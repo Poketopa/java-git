@@ -21,6 +21,9 @@ import main.java.app.service.CheckoutService;
 import main.java.app.service.MergeService;
 import main.java.app.service.PushService;
 import main.java.app.service.PullService;
+import main.java.app.service.CloneService;
+import main.java.app.service.HttpPushService;
+import main.java.app.service.HttpPullService;
 
 import java.nio.file.Path;
 import java.util.Objects;
@@ -35,7 +38,7 @@ public final class Appconfig {
     }
 
     public GitController gitController() {
-        return new GitController(initService(), addService(), commitService(), statusService(), logService(), branchService(), checkoutService(), mergeService(), pushService(), pullService(), outputView());
+        return new GitController(initService(), addService(), commitService(), statusService(), logService(), branchService(), checkoutService(), mergeService(), pushService(), pullService(), cloneService(), httpPushService(), httpPullService(), outputView());
     }
 
     private InitService initService() {
@@ -98,6 +101,22 @@ public final class Appconfig {
         RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
         ObjectReader objectReader = new FileObjectReader(rootDirectoryPath);
         return new PullService(refRepository, objectReader, rootDirectoryPath);
+    }
+
+    private CloneService cloneService() {
+        return new CloneService();
+    }
+
+    private HttpPushService httpPushService() {
+        RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
+        ObjectReader objectReader = new FileObjectReader(rootDirectoryPath);
+        return new HttpPushService(refRepository, objectReader, rootDirectoryPath);
+    }
+
+    private HttpPullService httpPullService() {
+        RefRepository refRepository = new FileRefRepository(rootDirectoryPath);
+        ObjectReader objectReader = new FileObjectReader(rootDirectoryPath);
+        return new HttpPullService(refRepository, objectReader, rootDirectoryPath);
     }
 }
 
