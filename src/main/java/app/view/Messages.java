@@ -58,6 +58,29 @@ public final class Messages {
     public static final String PULL_REMOTE_NO_COMMITS = "원격에 가져올 커밋이 없습니다.";
     public static final String PULL_NOT_FAST_FORWARD = "풀 실패: fast-forward로 가져올 수 없습니다.";
 
+    // clone
+    public static final String CLONE_USAGE = "사용법: git clone <remote-dir> <target-dir>";
+    public static final String CLONE_SUCCESS = "클론 완료: ";
+    public static final String CLONE_REMOTE_NOT_FOUND = "원격 디렉터리를 찾을 수 없습니다: ";
+    public static final String CLONE_TARGET_EXISTS = "대상 디렉터리가 비어있지 않습니다: ";
+    public static final String CLONE_REMOTE_NO_COMMITS = "원격에 가져올 커밋이 없습니다.";
+
+    // http remote
+    public static final String SERVE_HTTP_USAGE = "사용법: git serve-http <port>";
+    public static final String SERVE_HTTP_STARTED = "HTTP 원격 서버가 시작되었습니다. 포트: ";
+
+    public static final String PUSH_HTTP_USAGE = "사용법: git push-http <base-url> <브랜치>";
+    public static final String PUSH_HTTP_SUCCESS = "HTTP 푸시 완료: ";
+    public static final String PUSH_HTTP_UP_TO_DATE = "원격이 이미 최신 상태입니다.(HTTP)";
+    public static final String PUSH_HTTP_REJECTED_NON_FF = "HTTP 푸시 거부: fast-forward가 아닙니다.";
+    public static final String PUSH_HTTP_LOCAL_NO_COMMITS = "로컬에 푸시할 커밋이 없습니다.(HTTP)";
+
+    public static final String PULL_HTTP_USAGE = "사용법: git pull-http <base-url> <브랜치>";
+    public static final String PULL_HTTP_SUCCESS = "HTTP 풀 완료: ";
+    public static final String PULL_HTTP_UP_TO_DATE = "이미 최신 상태입니다.(HTTP)";
+    public static final String PULL_HTTP_REMOTE_NO_COMMITS = "원격에 가져올 커밋이 없습니다.(HTTP)";
+    public static final String PULL_HTTP_NOT_FAST_FORWARD = "HTTP 풀 실패: fast-forward로 가져올 수 없습니다.";
+
     public static final String REPL_WELCOME = "Interactive mode started. Type 'help' for usage, 'exit' to quit.";
     public static final String REPL_PROMPT = "java-git> ";
     public static final String REPL_BYE = "Bye.";
