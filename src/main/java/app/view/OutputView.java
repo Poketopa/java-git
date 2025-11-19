@@ -169,6 +169,62 @@ public final class OutputView {
         System.err.println(Messages.PULL_NOT_FAST_FORWARD);
     }
 
+    // clone
+    public void showCloneUsage() {
+        System.out.println(Messages.CLONE_USAGE);
+    }
+    public void showCloneSuccess(String targetDir) {
+        System.out.println(Messages.CLONE_SUCCESS + targetDir);
+    }
+    public void showCloneRemoteNotFound(String remoteDir) {
+        System.err.println(Messages.CLONE_REMOTE_NOT_FOUND + remoteDir);
+    }
+    public void showCloneTargetExists(String targetDir) {
+        System.err.println(Messages.CLONE_TARGET_EXISTS + targetDir);
+    }
+    public void showCloneRemoteNoCommits() {
+        System.err.println(Messages.CLONE_REMOTE_NO_COMMITS);
+    }
+
+    // http remote
+    public void showServeHttpUsage() {
+        System.out.println(Messages.SERVE_HTTP_USAGE);
+    }
+    public void showServeHttpStarted(int port) {
+        System.out.println(Messages.SERVE_HTTP_STARTED + port);
+    }
+
+    public void showPushHttpUsage() {
+        System.out.println(Messages.PUSH_HTTP_USAGE);
+    }
+    public void showPushHttpSuccess(String branch) {
+        System.out.println(Messages.PUSH_HTTP_SUCCESS + branch);
+    }
+    public void showPushHttpUpToDate() {
+        System.out.println(Messages.PUSH_HTTP_UP_TO_DATE);
+    }
+    public void showPushHttpRejectedNonFastForward() {
+        System.err.println(Messages.PUSH_HTTP_REJECTED_NON_FF);
+    }
+    public void showPushHttpLocalNoCommits() {
+        System.err.println(Messages.PUSH_HTTP_LOCAL_NO_COMMITS);
+    }
+
+    public void showPullHttpUsage() {
+        System.out.println(Messages.PULL_HTTP_USAGE);
+    }
+    public void showPullHttpSuccess(String branch) {
+        System.out.println(Messages.PULL_HTTP_SUCCESS + branch);
+    }
+    public void showPullHttpUpToDate() {
+        System.out.println(Messages.PULL_HTTP_UP_TO_DATE);
+    }
+    public void showPullHttpRemoteNoCommits() {
+        System.out.println(Messages.PULL_HTTP_REMOTE_NO_COMMITS);
+    }
+    public void showPullHttpNotFastForward() {
+        System.err.println(Messages.PULL_HTTP_NOT_FAST_FORWARD);
+    }
     // log 출력 포맷팅 (요약)
     public void showLog(java.util.List<LogService.LogEntry> entries) {
         if (entries == null || entries.isEmpty()) {
