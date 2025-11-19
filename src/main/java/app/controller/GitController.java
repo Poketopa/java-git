@@ -10,6 +10,10 @@ import main.java.app.service.CheckoutService;
 import main.java.app.service.MergeService;
 import main.java.app.service.PushService;
 import main.java.app.service.PullService;
+import main.java.app.service.CloneService;
+import main.java.app.service.HttpPushService;
+import main.java.app.service.HttpPullService;
+import main.java.app.remote.http.HttpRemoteServer;
 import main.java.app.util.CommandLineParser;
 import main.java.app.view.OutputView;
 
@@ -45,9 +49,12 @@ public final class GitController {
     private final OutputView outputView;
     private final PushService pushService;
     private final PullService pullService;
+    private final CloneService cloneService;
+    private final HttpPushService httpPushService;
+    private final HttpPullService httpPullService;
     private final Map<String, Command> commandHandlers;
 
-    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, CheckoutService checkoutService, MergeService mergeService, PushService pushService, PullService pullService, OutputView outputView) {
+    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, CheckoutService checkoutService, MergeService mergeService, PushService pushService, PullService pullService, CloneService cloneService, HttpPushService httpPushService, HttpPullService httpPullService, OutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
         this.addService = Objects.requireNonNull(addService, "addService");
         this.commitService = Objects.requireNonNull(commitService, "commitService");
@@ -58,6 +65,9 @@ public final class GitController {
         this.mergeService = Objects.requireNonNull(mergeService, "mergeService");
         this.pushService = Objects.requireNonNull(pushService, "pushService");
         this.pullService = Objects.requireNonNull(pullService, "pullService");
+        this.cloneService = Objects.requireNonNull(cloneService, "cloneService");
+        this.httpPushService = Objects.requireNonNull(httpPushService, "httpPushService");
+        this.httpPullService = Objects.requireNonNull(httpPullService, "httpPullService");
         this.outputView = Objects.requireNonNull(outputView, "outputView");
         this.commandHandlers = new HashMap<>();
         registerCommandHandlers();
@@ -251,6 +261,72 @@ public final class GitController {
                 case ALREADY_UP_TO_DATE -> outputView.showPullUpToDate();
                 case REMOTE_NO_COMMITS -> outputView.showPullRemoteNoCommits();
                 case NOT_FAST_FORWARD -> outputView.showPullNotFastForward();
+            }
+        });
+        this.commandHandlers.put("clone", args -> {
+            if (args.length != 3) {
+                outputView.showCloneUsage();
+                return;
+            }
+            java.nio.file.Path remote = java.nio.file.Path.of(args[1]);
+            java.nio.file.Path target = java.nio.file.Path.of(args[2]);
+            CloneService.CloneResult result = cloneService.clone(remote, target);
+            switch (result) {
+                case SUCCESS -> outputView.showCloneSuccess(target.toString());
+                case REMOTE_NOT_FOUND -> outputView.showCloneRemoteNotFound(remote.toString());
+                case TARGET_EXISTS_NOT_EMPTY -> outputView.showCloneTargetExists(target.toString());
+                case REMOTE_NO_COMMITS -> outputView.showCloneRemoteNoCommits();
+            }
+        });
+        this.commandHandlers.put("serve-http", args -> {
+            if (args.length != 2) {
+                outputView.showServeHttpUsage();
+                return;
+            }
+            int port;
+            try {
+                port = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+                outputView.showServeHttpUsage();
+                return;
+            }
+            // 서버는 현재 워킹 디렉터리를 원격 루트로 사용
+            java.nio.file.Path root = java.nio.file.Paths.get(System.getProperty("user.dir"));
+            HttpRemoteServer server = new HttpRemoteServer(root);
+            // 데몬 스레드로 실행
+            Thread t = new Thread(() -> server.start(port));
+            t.setDaemon(true);
+            t.start();
+            outputView.showServeHttpStarted(port);
+        });
+        this.commandHandlers.put("push-http", args -> {
+            if (args.length != 3) {
+                outputView.showPushHttpUsage();
+                return;
+            }
+            String baseUrl = args[1];
+            String branch = args[2];
+            HttpPushService.Result result = httpPushService.push(baseUrl, branch);
+            switch (result) {
+                case SUCCESS -> outputView.showPushHttpSuccess(branch);
+                case ALREADY_UP_TO_DATE -> outputView.showPushHttpUpToDate();
+                case REMOTE_REJECTED_NON_FF -> outputView.showPushHttpRejectedNonFastForward();
+                case LOCAL_NO_COMMITS -> outputView.showPushHttpLocalNoCommits();
+            }
+        });
+        this.commandHandlers.put("pull-http", args -> {
+            if (args.length != 3) {
+                outputView.showPullHttpUsage();
+                return;
+            }
+            String baseUrl = args[1];
+            String branch = args[2];
+            HttpPullService.Result result = httpPullService.pull(baseUrl, branch);
+            switch (result) {
+                case SUCCESS -> outputView.showPullHttpSuccess(branch);
+                case ALREADY_UP_TO_DATE -> outputView.showPullHttpUpToDate();
+                case REMOTE_NO_COMMITS -> outputView.showPullHttpRemoteNoCommits();
+                case NOT_FAST_FORWARD -> outputView.showPullHttpNotFastForward();
             }
         });
     }
