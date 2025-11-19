@@ -61,6 +61,7 @@ public final class HttpPushService {
         if (!Files.exists(objectsDir)) {
             return;
         }
+        java.util.Set<String> remoteObjects = remote.listObjects();
         try (var dirs = Files.list(objectsDir)) {
             dirs.filter(Files::isDirectory).forEach(dir -> {
                 String prefix = dir.getFileName().toString();
@@ -68,7 +69,7 @@ public final class HttpPushService {
                     files.filter(Files::isRegularFile).forEach(f -> {
                         String suffix = f.getFileName().toString();
                         String oid = prefix + suffix;
-                        if (remote.hasObject(oid)) {
+                        if (remoteObjects.contains(oid)) {
                             return;
                         }
                         try {
