@@ -1,4 +1,4 @@
-package main.java.app.service;
+package main.java.app.service.remote.http;
 
 import main.java.app.remote.http.HttpRemoteClient;
 import main.java.app.repository.ObjectReader;
@@ -44,8 +44,6 @@ public final class HttpPullService {
             return Result.NOT_FAST_FORWARD;
         }
 
-        // 투박한 방식: remote objects 목록을 받아 전부 다운로드
-        // 서버 /objects 목록은 HttpRemoteClient에 아직 없으므로 필요한 oid는 커밋 체인을 따라가며 on-demand로 다운로드
         downloadCommitChain(remote, remoteHead);
         localRefRepository.updateBranchHead(branch, remoteHead);
         return Result.SUCCESS;
@@ -56,10 +54,8 @@ public final class HttpPullService {
         while (cursor != null && !cursor.isBlank()) {
             ensureObject(remote, cursor);
             String parent = parseParent(cursor);
-            // 커밋이 가리키는 tree도 확보
             String treeSha = parseTree(cursor);
             ensureObject(remote, treeSha);
-            // tree가 가리키는 blob들 확보(포맷: "blob <sha> <path>")
             String treeContent = new String(localObjectReader.readRaw(treeSha), java.nio.charset.StandardCharsets.UTF_8);
             for (String line : treeContent.split("\n")) {
                 if (!line.startsWith("blob ")) {
@@ -82,7 +78,7 @@ public final class HttpPullService {
             localObjectReader.readRaw(oid);
         } catch (IllegalArgumentException e) {
             byte[] bytes = remote.getObject(oid);
-            localObjectWriter.write(bytes); // 내부에서 경로는 해시로 결정되므로 동일하게 저장
+            localObjectWriter.write(bytes);
         }
     }
 

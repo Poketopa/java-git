@@ -1,4 +1,4 @@
-package main.java.app.service;
+package main.java.app.service.remote.fs;
 
 import main.java.app.remote.FileRemoteClient;
 import main.java.app.repository.ObjectReader;

@@ -1,4 +1,4 @@
-package main.java.app.service;
+package main.java.app.service.remote.fs;
 
 import main.java.app.remote.FileRemoteClient;
 import main.java.app.repository.ObjectReader;
@@ -20,7 +20,6 @@ public final class PullService {
     private final RefRepository localRefRepository;
     private final ObjectReader localObjectReader;
     private final Path localRoot;
-    private static final String PARENT_PREFIX = "parent ";
 
     public PullService(RefRepository localRefRepository, ObjectReader localObjectReader, Path localRoot) {
         this.localRefRepository = Objects.requireNonNull(localRefRepository, "localRefRepository");
@@ -70,8 +69,8 @@ public final class PullService {
         String content = new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
         String[] lines = content.split("\n");
         for (String line : lines) {
-            if (line.startsWith(PARENT_PREFIX)) {
-                return line.substring(PARENT_PREFIX.length()).trim();
+            if (line.startsWith("parent ")) {
+                return line.substring("parent ".length()).trim();
             }
             if (line.isBlank()) {
                 break;

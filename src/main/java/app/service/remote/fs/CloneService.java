@@ -1,4 +1,4 @@
-package main.java.app.service;
+package main.java.app.service.remote.fs;
 
 import main.java.app.exception.ErrorCode;
 import main.java.app.remote.FileRemoteClient;

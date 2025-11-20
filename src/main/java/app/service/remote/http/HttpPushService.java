@@ -1,4 +1,4 @@
-package main.java.app.service;
+package main.java.app.service.remote.http;
 
 import main.java.app.remote.http.HttpRemoteClient;
 import main.java.app.repository.ObjectReader;
@@ -7,7 +7,6 @@ import main.java.app.repository.RefRepository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.EnumSet;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,43 +48,37 @@ public final class HttpPushService {
             return Result.REMOTE_REJECTED_NON_FF;
         }
 
-        // 투박한 방식: 로컬 모든 objects 업로드(존재하면 서버가 OK 처리)
-        uploadAllLocalObjects(remote);
-        // ref 업데이트(동시성 체크 old==current)
+        // 투박한 방식: 원격 목록을 받아 없는 OID만 업로드
+        java.util.Set<String> remoteObjects = remote.listObjects();
+        Path objectsDir = localRoot.resolve(DOT_JAVA_GIT).resolve(OBJECTS);
+        if (Files.exists(objectsDir)) {
+            try (var dirs = Files.list(objectsDir)) {
+                dirs.filter(Files::isDirectory).forEach(dir -> {
+                    String prefix = dir.getFileName().toString();
+                    try (var files = Files.list(dir)) {
+                        files.filter(Files::isRegularFile).forEach(f -> {
+                            String suffix = f.getFileName().toString();
+                            String oid = prefix + suffix;
+                            if (remoteObjects.contains(oid)) {
+                                return;
+                            }
+                            try {
+                                byte[] bytes = Files.readAllBytes(f);
+                                remote.putObject(oid, bytes);
+                            } catch (IOException e) {
+                                throw new IllegalArgumentException("[ERROR] 로컬 객체 읽기 실패", e);
+                            }
+                        });
+                    } catch (IOException e) {
+                        throw new IllegalArgumentException("[ERROR] 로컬 objects 열기 실패", e);
+                    }
+                });
+            } catch (IOException e) {
+                throw new IllegalArgumentException("[ERROR] 로컬 objects 디렉터리 열기 실패", e);
+            }
+        }
         remote.updateRef(branch, remoteHead, localHead);
         return Result.SUCCESS;
-    }
-
-    private void uploadAllLocalObjects(HttpRemoteClient remote) {
-        Path objectsDir = localRoot.resolve(DOT_JAVA_GIT).resolve(OBJECTS);
-        if (!Files.exists(objectsDir)) {
-            return;
-        }
-        java.util.Set<String> remoteObjects = remote.listObjects();
-        try (var dirs = Files.list(objectsDir)) {
-            dirs.filter(Files::isDirectory).forEach(dir -> {
-                String prefix = dir.getFileName().toString();
-                try (var files = Files.list(dir)) {
-                    files.filter(Files::isRegularFile).forEach(f -> {
-                        String suffix = f.getFileName().toString();
-                        String oid = prefix + suffix;
-                        if (remoteObjects.contains(oid)) {
-                            return;
-                        }
-                        try {
-                            byte[] bytes = Files.readAllBytes(f);
-                            remote.putObject(oid, bytes);
-                        } catch (IOException e) {
-                            throw new IllegalArgumentException("[ERROR] 로컬 객체 읽기 실패", e);
-                        }
-                    });
-                } catch (IOException e) {
-                    throw new IllegalArgumentException("[ERROR] 로컬 objects 열기 실패", e);
-                }
-            });
-        } catch (IOException e) {
-            throw new IllegalArgumentException("[ERROR] 로컬 objects 디렉터리 열기 실패", e);
-        }
     }
 
     private boolean isAncestor(String possibleAncestor, String commit) {
