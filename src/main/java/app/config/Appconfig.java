@@ -19,11 +19,11 @@ import main.java.app.service.LogService;
 import main.java.app.service.BranchService;
 import main.java.app.service.CheckoutService;
 import main.java.app.service.MergeService;
-import main.java.app.service.PushService;
-import main.java.app.service.PullService;
-import main.java.app.service.CloneService;
-import main.java.app.service.HttpPushService;
-import main.java.app.service.HttpPullService;
+import main.java.app.service.remote.fs.PushService;
+import main.java.app.service.remote.fs.PullService;
+import main.java.app.service.remote.fs.CloneService;
+import main.java.app.service.remote.http.HttpPushService;
+import main.java.app.service.remote.http.HttpPullService;
 
 import java.nio.file.Path;
 import java.util.Objects;
