@@ -8,12 +8,12 @@ import main.java.app.service.LogService;
 import main.java.app.service.BranchService;
 import main.java.app.service.CheckoutService;
 import main.java.app.service.MergeService;
-import main.java.app.service.PushService;
-import main.java.app.service.PullService;
-import main.java.app.service.CloneService;
-import main.java.app.service.HttpPushService;
-import main.java.app.service.HttpPullService;
-import main.java.app.remote.http.HttpRemoteServer;
+import main.java.app.service.remote.fs.PushService;
+import main.java.app.service.remote.fs.PullService;
+import main.java.app.service.remote.fs.CloneService;
+import main.java.app.service.remote.http.HttpPushService;
+import main.java.app.service.remote.http.HttpPullService;
+import main.java.app.controller.command.handlers.*;
 import main.java.app.util.CommandLineParser;
 import main.java.app.view.OutputView;
 
@@ -34,9 +34,6 @@ import java.util.regex.Pattern;
 // - 명령 파싱 후 Service에 위임
 public final class GitController {
     private static final Pattern TOKEN_PATTERN = Pattern.compile("\"([^\"]*)\"|'([^']*)'|\\S+");
-    private interface Command {
-        void execute(String[] args);
-    }
 
     private final InitService initService;
     private final AddService addService;
@@ -52,7 +49,21 @@ public final class GitController {
     private final CloneService cloneService;
     private final HttpPushService httpPushService;
     private final HttpPullService httpPullService;
-    private final Map<String, Command> commandHandlers;
+    // Handlers
+    private final InitCmd initCmd;
+    private final AddCmd addCmd;
+    private final CommitCmd commitCmd;
+    private final StatusCmd statusCmd;
+    private final LogCmd logCmd;
+    private final BranchCmd branchCmd;
+    private final CheckoutCmd checkoutCmd;
+    private final MergeCmd mergeCmd;
+    private final PushFsCmd pushFsCmd;
+    private final PullFsCmd pullFsCmd;
+    private final CloneFsCmd cloneFsCmd;
+    private final ServeHttpCmd serveHttpCmd;
+    private final PushHttpCmd pushHttpCmd;
+    private final PullHttpCmd pullHttpCmd;
 
     public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, CheckoutService checkoutService, MergeService mergeService, PushService pushService, PullService pullService, CloneService cloneService, HttpPushService httpPushService, HttpPullService httpPullService, OutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
@@ -69,8 +80,21 @@ public final class GitController {
         this.httpPushService = Objects.requireNonNull(httpPushService, "httpPushService");
         this.httpPullService = Objects.requireNonNull(httpPullService, "httpPullService");
         this.outputView = Objects.requireNonNull(outputView, "outputView");
-        this.commandHandlers = new HashMap<>();
-        registerCommandHandlers();
+        // init handlers
+        this.initCmd = new InitCmd(initService, outputView);
+        this.addCmd = new AddCmd(addService, outputView);
+        this.commitCmd = new CommitCmd(commitService, outputView);
+        this.statusCmd = new StatusCmd(statusService, outputView);
+        this.logCmd = new LogCmd(logService, outputView);
+        this.branchCmd = new BranchCmd(branchService, outputView);
+        this.checkoutCmd = new CheckoutCmd(checkoutService, outputView);
+        this.mergeCmd = new MergeCmd(mergeService, outputView);
+        this.pushFsCmd = new PushFsCmd(pushService, outputView);
+        this.pullFsCmd = new PullFsCmd(pullService, outputView);
+        this.cloneFsCmd = new CloneFsCmd(cloneService, outputView);
+        this.serveHttpCmd = new ServeHttpCmd(outputView);
+        this.pushHttpCmd = new PushHttpCmd(httpPushService, outputView);
+        this.pullHttpCmd = new PullHttpCmd(httpPullService, outputView);
     }
 
     // 한 번에 하나의 명령을 실행
@@ -79,12 +103,7 @@ public final class GitController {
             showUsage();
             return;
         }
-        Command handler = commandHandlers.get(args[0]);
-        if (handler == null) {
-            showUsage();
-            return;
-        }
-        handler.execute(args);
+        dispatch(args);
     }
 
     // 인터랙티브 콘솔 (REPL)
@@ -158,177 +177,25 @@ public final class GitController {
         return tokens.toArray(new String[0]);
     }
 
-    private void registerCommandHandlers() {
-        this.commandHandlers.put("init", args -> {
-            initService.init();
-            outputView.showInitSuccess();
-        });
-        this.commandHandlers.put("add", args -> {
-            List<String> filePaths = CommandLineParser.extractPaths(args);
-            if (filePaths.isEmpty()) {
-                outputView.showAddMissingPath();
-                return;
-            }
-            addService.add(filePaths);
-            outputView.showAddedToIndex(filePaths.size());
-        });
-        this.commandHandlers.put("commit", args -> {
-            String message = CommandLineParser.findOptionValue(args, "-m");
-            String author = CommandLineParser.findOptionValue(args, "-a");
-            if (message == null || message.isBlank() || author == null || author.isBlank()) {
-                outputView.showCommitUsageError();
-                return;
-            }
-            commitService.commit(message, author);
-            outputView.showCommitCreated();
-        });
-        this.commandHandlers.put("status", args -> {
-            StatusService.StatusResult result = statusService.status();
-            outputView.showStatus(result);
-        });
-        this.commandHandlers.put("log", args -> {
-            java.util.List<LogService.LogEntry> entries = logService.list();
-            outputView.showLog(entries);
-        });
-        this.commandHandlers.put("branch", args -> {
-            if (args.length == 1) {
-                outputView.showBranches(branchService.list());
-                return;
-            }
-            if (args.length == 2) {
-                try {
-                    branchService.create(args[1]);
-                    outputView.showBranchCreated(args[1]);
-                } catch (IllegalArgumentException e) {
-                    outputView.showBranchAlreadyExists(args[1]);
-                }
-                return;
-            }
-            showUsage();
-        });
-        this.commandHandlers.put("checkout", args -> {
-            if (args.length != 2) {
-                outputView.showCheckoutUsage();
-                return;
-            }
-            String branch = args[1];
-            CheckoutService.CheckoutResult result = checkoutService.switchBranch(branch);
-            switch (result) {
-                case SUCCESS -> outputView.showCheckoutSuccess(branch);
-                case BRANCH_NOT_FOUND -> outputView.showCheckoutNotFound(branch);
-                case WORKING_TREE_NOT_CLEAN -> outputView.showCheckoutDirty();
-            }
-        });
-        this.commandHandlers.put("merge", args -> {
-            if (args.length != 2) {
-                outputView.showMergeUsage();
-                return;
-            }
-            String targetBranch = args[1];
-            MergeService.MergeResult result = mergeService.merge(targetBranch);
-            switch (result) {
-                case ALREADY_UP_TO_DATE -> outputView.showMergeAlreadyUpToDate();
-                case FAST_FORWARD -> outputView.showMergeFastForward(targetBranch);
-                case BRANCH_NOT_FOUND -> outputView.showMergeBranchNotFound(targetBranch);
-                case NOT_FAST_FORWARD -> outputView.showMergeNotFastForward();
-            }
-        });
-        this.commandHandlers.put("push", args -> {
-            if (args.length != 3) {
-                outputView.showPushUsage();
-                return;
-            }
-            java.nio.file.Path remote = java.nio.file.Path.of(args[1]);
-            String branch = args[2];
-            PushService.PushResult result = pushService.push(remote, branch);
-            switch (result) {
-                case SUCCESS -> outputView.showPushSuccess(branch);
-                case ALREADY_UP_TO_DATE -> outputView.showPushUpToDate();
-                case REMOTE_REJECTED_NON_FF -> outputView.showPushRejectedNonFastForward();
-                case LOCAL_NO_COMMITS -> outputView.showPushLocalNoCommits();
-            }
-        });
-        this.commandHandlers.put("pull", args -> {
-            if (args.length != 3) {
-                outputView.showPullUsage();
-                return;
-            }
-            java.nio.file.Path remote = java.nio.file.Path.of(args[1]);
-            String branch = args[2];
-            PullService.PullResult result = pullService.pull(remote, branch);
-            switch (result) {
-                case SUCCESS -> outputView.showPullSuccess(branch);
-                case ALREADY_UP_TO_DATE -> outputView.showPullUpToDate();
-                case REMOTE_NO_COMMITS -> outputView.showPullRemoteNoCommits();
-                case NOT_FAST_FORWARD -> outputView.showPullNotFastForward();
-            }
-        });
-        this.commandHandlers.put("clone", args -> {
-            if (args.length != 3) {
-                outputView.showCloneUsage();
-                return;
-            }
-            java.nio.file.Path remote = java.nio.file.Path.of(args[1]);
-            java.nio.file.Path target = java.nio.file.Path.of(args[2]);
-            CloneService.CloneResult result = cloneService.clone(remote, target);
-            switch (result) {
-                case SUCCESS -> outputView.showCloneSuccess(target.toString());
-                case REMOTE_NOT_FOUND -> outputView.showCloneRemoteNotFound(remote.toString());
-                case TARGET_EXISTS_NOT_EMPTY -> outputView.showCloneTargetExists(target.toString());
-                case REMOTE_NO_COMMITS -> outputView.showCloneRemoteNoCommits();
-            }
-        });
-        this.commandHandlers.put("serve-http", args -> {
-            if (args.length != 2) {
-                outputView.showServeHttpUsage();
-                return;
-            }
-            int port;
-            try {
-                port = Integer.parseInt(args[1]);
-            } catch (NumberFormatException e) {
-                outputView.showServeHttpUsage();
-                return;
-            }
-            // 서버는 현재 워킹 디렉터리를 원격 루트로 사용
-            java.nio.file.Path root = java.nio.file.Paths.get(System.getProperty("user.dir"));
-            HttpRemoteServer server = new HttpRemoteServer(root);
-            // 데몬 스레드로 실행
-            Thread t = new Thread(() -> server.start(port));
-            t.setDaemon(true);
-            t.start();
-            outputView.showServeHttpStarted(port);
-        });
-        this.commandHandlers.put("push-http", args -> {
-            if (args.length != 3) {
-                outputView.showPushHttpUsage();
-                return;
-            }
-            String baseUrl = args[1];
-            String branch = args[2];
-            HttpPushService.Result result = httpPushService.push(baseUrl, branch);
-            switch (result) {
-                case SUCCESS -> outputView.showPushHttpSuccess(branch);
-                case ALREADY_UP_TO_DATE -> outputView.showPushHttpUpToDate();
-                case REMOTE_REJECTED_NON_FF -> outputView.showPushHttpRejectedNonFastForward();
-                case LOCAL_NO_COMMITS -> outputView.showPushHttpLocalNoCommits();
-            }
-        });
-        this.commandHandlers.put("pull-http", args -> {
-            if (args.length != 3) {
-                outputView.showPullHttpUsage();
-                return;
-            }
-            String baseUrl = args[1];
-            String branch = args[2];
-            HttpPullService.Result result = httpPullService.pull(baseUrl, branch);
-            switch (result) {
-                case SUCCESS -> outputView.showPullHttpSuccess(branch);
-                case ALREADY_UP_TO_DATE -> outputView.showPullHttpUpToDate();
-                case REMOTE_NO_COMMITS -> outputView.showPullHttpRemoteNoCommits();
-                case NOT_FAST_FORWARD -> outputView.showPullHttpNotFastForward();
-            }
-        });
+    private void dispatch(String[] args) {
+        String cmd = args[0];
+        switch (cmd) {
+            case "init" -> initCmd.execute(args);
+            case "add" -> addCmd.execute(args);
+            case "commit" -> commitCmd.execute(args);
+            case "status" -> statusCmd.execute(args);
+            case "log" -> logCmd.execute(args);
+            case "branch" -> branchCmd.execute(args);
+            case "checkout" -> checkoutCmd.execute(args);
+            case "merge" -> mergeCmd.execute(args);
+            case "push" -> pushFsCmd.execute(args);
+            case "pull" -> pullFsCmd.execute(args);
+            case "clone" -> cloneFsCmd.execute(args);
+            case "serve-http" -> serveHttpCmd.execute(args);
+            case "push-http" -> pushHttpCmd.execute(args);
+            case "pull-http" -> pullHttpCmd.execute(args);
+            default -> showUsage();
+        }
     }
 
     private void showUsage() {
