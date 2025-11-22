@@ -1,7 +1,7 @@
-package main.java.app.view;
+package app.view;
 
-import main.java.app.service.StatusService;
-import main.java.app.service.LogService;
+import app.service.StatusService;
+import app.service.LogService;
 
 public final class OutputView {
     // REPL 안내/프롬프트/종료/에러 출력

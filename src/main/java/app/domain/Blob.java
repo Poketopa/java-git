@@ -1,7 +1,7 @@
-package main.java.app.domain;
+package app.domain;
 
 import java.util.Arrays;
-import main.java.app.exception.ErrorCode;
+import app.exception.ErrorCode;
 
 public final class Blob {
     private final byte[] file;

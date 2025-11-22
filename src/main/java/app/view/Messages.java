@@ -1,4 +1,4 @@
-package main.java.app.view;
+package app.view;
 
 public final class Messages {
     public static final String INIT_SUCCESS = "저장소를 초기화했습니다.";

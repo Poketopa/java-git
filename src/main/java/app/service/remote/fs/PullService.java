@@ -1,8 +1,8 @@
-package main.java.app.service.remote.fs;
+package app.service.remote.fs;
 
-import main.java.app.remote.FileRemoteClient;
-import main.java.app.repository.ObjectReader;
-import main.java.app.repository.RefRepository;
+import app.remote.FileRemoteClient;
+import app.repository.ObjectReader;
+import app.repository.RefRepository;
 
 import java.nio.file.Path;
 import java.util.Objects;

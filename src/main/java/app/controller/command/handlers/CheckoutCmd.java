@@ -1,7 +1,7 @@
-package main.java.app.controller.command.handlers;
+package app.controller.command.handlers;
 
-import main.java.app.service.CheckoutService;
-import main.java.app.view.OutputView;
+import app.service.CheckoutService;
+import app.view.OutputView;
 
 import java.util.Objects;
 
@@ -38,3 +38,4 @@ public final class CheckoutCmd {
         }
     }
 }
+

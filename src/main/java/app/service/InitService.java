@@ -1,4 +1,4 @@
-package main.java.app.service;
+package app.service;
 
 import java.nio.file.Path;
 import java.util.Objects;

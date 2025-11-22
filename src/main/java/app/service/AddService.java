@@ -1,9 +1,9 @@
-package main.java.app.service;
+package app.service;
 
-import main.java.app.domain.Index;
-import main.java.app.exception.ErrorCode;
-import main.java.app.repository.IndexRepository;
-import main.java.app.repository.ObjectWriter;
+import app.domain.Index;
+import app.exception.ErrorCode;
+import app.repository.IndexRepository;
+import app.repository.ObjectWriter;
 
 import java.io.IOException;
 import java.nio.file.Files;

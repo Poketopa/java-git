@@ -1,6 +1,6 @@
-package main.java.app.service;
+package app.service;
 
-import main.java.app.exception.ErrorCode;
+import app.exception.ErrorCode;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

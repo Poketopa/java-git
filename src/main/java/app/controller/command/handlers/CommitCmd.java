@@ -1,8 +1,8 @@
-package main.java.app.controller.command.handlers;
+package app.controller.command.handlers;
 
-import main.java.app.service.CommitService;
-import main.java.app.util.CommandLineParser;
-import main.java.app.view.OutputView;
+import app.service.CommitService;
+import app.util.CommandLineParser;
+import app.view.OutputView;
 
 import java.util.Objects;
 

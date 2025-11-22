@@ -1,7 +1,7 @@
-package main.java.app.controller.command.handlers;
+package app.controller.command.handlers;
 
-import main.java.app.service.remote.fs.CloneService;
-import main.java.app.view.OutputView;
+import app.service.remote.fs.CloneService;
+import app.view.OutputView;
 
 import java.nio.file.Path;
 import java.util.Objects;

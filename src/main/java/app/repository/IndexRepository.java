@@ -1,6 +1,6 @@
-package main.java.app.repository;
+package app.repository;
 
-import main.java.app.domain.Index;
+import app.domain.Index;
 
 public interface IndexRepository {
     Index read();

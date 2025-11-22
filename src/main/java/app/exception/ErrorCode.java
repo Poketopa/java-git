@@ -1,4 +1,4 @@
-package main.java.app.exception;
+package app.exception;
 
 public enum ErrorCode {
     EMPTY_PATHS("[ERROR] 추가할 경로가 비어 있습니다."),

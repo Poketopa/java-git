@@ -1,8 +1,8 @@
-package main.java.app.service.remote.http;
+package app.service.remote.http;
 
-import main.java.app.remote.http.HttpRemoteClient;
-import main.java.app.repository.ObjectReader;
-import main.java.app.repository.RefRepository;
+import app.remote.http.HttpRemoteClient;
+import app.repository.ObjectReader;
+import app.repository.RefRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;

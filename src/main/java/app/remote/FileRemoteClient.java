@@ -1,6 +1,6 @@
-package main.java.app.remote;
+package app.remote;
 
-import main.java.app.exception.ErrorCode;
+import app.exception.ErrorCode;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

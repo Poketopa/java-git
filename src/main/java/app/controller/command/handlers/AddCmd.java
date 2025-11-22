@@ -1,8 +1,8 @@
-package main.java.app.controller.command.handlers;
+package app.controller.command.handlers;
 
-import main.java.app.service.AddService;
-import main.java.app.util.CommandLineParser;
-import main.java.app.view.OutputView;
+import app.service.AddService;
+import app.util.CommandLineParser;
+import app.view.OutputView;
 
 import java.util.List;
 import java.util.Objects;

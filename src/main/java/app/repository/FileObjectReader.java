@@ -1,9 +1,9 @@
-package main.java.app.repository;
+package app.repository;
 
-import main.java.app.domain.Blob;
-import main.java.app.domain.Commit;
-import main.java.app.domain.Tree;
-import main.java.app.exception.ErrorCode;
+import app.domain.Blob;
+import app.domain.Commit;
+import app.domain.Tree;
+import app.exception.ErrorCode;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

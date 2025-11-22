@@ -1,7 +1,7 @@
-package main.java.app.controller.command.handlers;
+package app.controller.command.handlers;
 
-import main.java.app.remote.http.HttpRemoteServer;
-import main.java.app.view.OutputView;
+import app.remote.http.HttpRemoteServer;
+import app.view.OutputView;
 
 import java.nio.file.Paths;
 import java.util.Objects;

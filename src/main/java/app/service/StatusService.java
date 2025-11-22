@@ -1,11 +1,11 @@
-package main.java.app.service;
+package app.service;
 
-import main.java.app.domain.Commit;
-import main.java.app.domain.Tree;
-import main.java.app.exception.ErrorCode;
-import main.java.app.repository.IndexRepository;
-import main.java.app.repository.ObjectReader;
-import main.java.app.repository.RefRepository;
+import app.domain.Commit;
+import app.domain.Tree;
+import app.exception.ErrorCode;
+import app.repository.IndexRepository;
+import app.repository.ObjectReader;
+import app.repository.RefRepository;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;

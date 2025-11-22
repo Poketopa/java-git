@@ -1,16 +1,16 @@
-package main.java.app.remote.http;
+package app.remote.http;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import main.java.app.exception.ErrorCode;
-import main.java.app.repository.FileObjectReader;
-import main.java.app.repository.FileObjectWriter;
-import main.java.app.repository.FileRefRepository;
-import main.java.app.repository.ObjectReader;
-import main.java.app.repository.ObjectWriter;
-import main.java.app.repository.RefRepository;
+import app.exception.ErrorCode;
+import app.repository.FileObjectReader;
+import app.repository.FileObjectWriter;
+import app.repository.FileRefRepository;
+import app.repository.ObjectReader;
+import app.repository.ObjectWriter;
+import app.repository.RefRepository;
 
 import java.io.IOException;
 import java.io.OutputStream;

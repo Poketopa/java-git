@@ -1,6 +1,6 @@
-package main.java.app.domain;
+package app.domain;
 
-import main.java.app.exception.ErrorCode;
+import app.exception.ErrorCode;
 
 public final class Head {
     private final String refName;

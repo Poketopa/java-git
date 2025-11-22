@@ -1,7 +1,7 @@
-package main.java.app.controller.command.handlers;
+package app.controller.command.handlers;
 
-import main.java.app.service.remote.http.HttpPullService;
-import main.java.app.view.OutputView;
+import app.service.remote.http.HttpPullService;
+import app.view.OutputView;
 
 import java.util.Objects;
 

@@ -1,6 +1,6 @@
-package main.java.app.service;
+package app.service;
 
-import main.java.app.repository.RefRepository;
+import app.repository.RefRepository;
 
 import java.util.Objects;
 

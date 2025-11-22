@@ -1,4 +1,4 @@
-package main.java.app.repository;
+package app.repository;
 
 public interface ObjectWriter {
     String write(byte[] bytes);

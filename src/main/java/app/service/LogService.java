@@ -1,8 +1,8 @@
-package main.java.app.service;
+package app.service;
 
-import main.java.app.exception.ErrorCode;
-import main.java.app.repository.ObjectReader;
-import main.java.app.repository.RefRepository;
+import app.exception.ErrorCode;
+import app.repository.ObjectReader;
+import app.repository.RefRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;

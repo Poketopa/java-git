@@ -1,7 +1,7 @@
-package main.java.app.repository;
+package app.repository;
 
-import main.java.app.domain.Index;
-import main.java.app.exception.ErrorCode;
+import app.domain.Index;
+import app.exception.ErrorCode;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

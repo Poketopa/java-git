@@ -1,12 +1,12 @@
-package main.java.app.service;
+package app.service;
 
-import main.java.app.domain.Commit;
-import main.java.app.domain.Index;
-import main.java.app.domain.Tree;
-import main.java.app.exception.ErrorCode;
-import main.java.app.repository.IndexRepository;
-import main.java.app.repository.ObjectWriter;
-import main.java.app.repository.RefRepository;
+import app.domain.Commit;
+import app.domain.Index;
+import app.domain.Tree;
+import app.exception.ErrorCode;
+import app.repository.IndexRepository;
+import app.repository.ObjectWriter;
+import app.repository.RefRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;

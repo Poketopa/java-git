@@ -1,7 +1,7 @@
-package main.java.app;
+package app;
 
-import main.java.app.config.Appconfig;
-import main.java.app.controller.GitController;
+import app.config.Appconfig;
+import app.controller.GitController;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

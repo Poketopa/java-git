@@ -1,7 +1,7 @@
-package main.java.app.controller.command.handlers;
+package app.controller.command.handlers;
 
-import main.java.app.service.BranchService;
-import main.java.app.view.OutputView;
+import app.service.BranchService;
+import app.view.OutputView;
 
 import java.util.Objects;
 

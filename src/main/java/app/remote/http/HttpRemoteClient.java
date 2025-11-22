@@ -1,4 +1,4 @@
-package main.java.app.remote.http;
+package app.remote.http;
 
 import java.io.IOException;
 import java.net.URI;

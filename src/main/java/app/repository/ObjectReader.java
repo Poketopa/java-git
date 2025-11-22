@@ -1,8 +1,8 @@
-package main.java.app.repository;
+package app.repository;
 
-import main.java.app.domain.Blob;
-import main.java.app.domain.Commit;
-import main.java.app.domain.Tree;
+import app.domain.Blob;
+import app.domain.Commit;
+import app.domain.Tree;
 
 public interface ObjectReader {
     byte[] readRaw(String objectId);

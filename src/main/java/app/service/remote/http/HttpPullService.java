@@ -1,10 +1,10 @@
-package main.java.app.service.remote.http;
+package app.service.remote.http;
 
-import main.java.app.remote.http.HttpRemoteClient;
-import main.java.app.repository.ObjectReader;
-import main.java.app.repository.ObjectWriter;
-import main.java.app.repository.RefRepository;
-import main.java.app.repository.FileObjectWriter;
+import app.remote.http.HttpRemoteClient;
+import app.repository.ObjectReader;
+import app.repository.ObjectWriter;
+import app.repository.RefRepository;
+import app.repository.FileObjectWriter;
 
 import java.nio.file.Path;
 import java.util.Map;

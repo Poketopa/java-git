@@ -1,7 +1,7 @@
-package main.java.app.service.remote.fs;
+package app.service.remote.fs;
 
-import main.java.app.exception.ErrorCode;
-import main.java.app.remote.FileRemoteClient;
+import app.exception.ErrorCode;
+import app.remote.FileRemoteClient;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
