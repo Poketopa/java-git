@@ -6,6 +6,9 @@ import main.java.app.view.OutputView;
 import java.util.Objects;
 
 public final class MergeCmd {
+    private static final int EXPECTED_ARGUMENTS = 2;
+    private static final int TARGET_BRANCH_INDEX = 1;
+
     private final MergeService mergeService;
     private final OutputView outputView;
 
@@ -15,21 +18,27 @@ public final class MergeCmd {
     }
 
     public void execute(String[] args) {
-        if (args.length != 2) {
+        if (args.length != EXPECTED_ARGUMENTS) {
             outputView.showMergeUsage();
             return;
         }
-        String targetBranch = args[1];
-        var result = mergeService.merge(targetBranch);
-        switch (result) {
-            case ALREADY_UP_TO_DATE -> outputView.showMergeAlreadyUpToDate();
-            case FAST_FORWARD -> outputView.showMergeFastForward(targetBranch);
-            case BRANCH_NOT_FOUND -> outputView.showMergeBranchNotFound(targetBranch);
-            case NOT_FAST_FORWARD -> outputView.showMergeNotFastForward();
+        String targetBranch = args[TARGET_BRANCH_INDEX];
+        MergeService.MergeResult result = mergeService.merge(targetBranch);
+
+        if (result == MergeService.MergeResult.ALREADY_UP_TO_DATE) {
+            outputView.showMergeAlreadyUpToDate();
+            return;
+        }
+        if (result == MergeService.MergeResult.FAST_FORWARD) {
+            outputView.showMergeFastForward(targetBranch);
+            return;
+        }
+        if (result == MergeService.MergeResult.BRANCH_NOT_FOUND) {
+            outputView.showMergeBranchNotFound(targetBranch);
+            return;
+        }
+        if (result == MergeService.MergeResult.NOT_FAST_FORWARD) {
+            outputView.showMergeNotFastForward();
         }
     }
 }
-
-
-
-
