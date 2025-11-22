@@ -10,7 +10,11 @@ public final class Main {
     public static void main(String[] args) {
         Path path = Paths.get(System.getProperty("user.dir"));
         GitController controller = new Appconfig(path).gitController();
-        controller.runConsole();
+        if (args.length > 0) {
+            controller.run(args);
+        } else {
+            controller.runConsole();
+        }
     }
 }
 
