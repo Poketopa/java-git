@@ -2,18 +2,16 @@
 
 ## 구현 목표
 - 로컬에서 CLI로 동작하는 git을 순수 Java로 구현한다.
-- Git의 내부 구조를 이해하고 구현
-- `.jgit` 디렉토리에 Git 메타데이터 저장
-- 실제 Git과 호환 가능하도록 구현 목표
-- Clean Architecture 원칙 준수
-- Hexagonal Architecture 패턴 적용 (Port & Adapter)
-- 불변 객체 및 방어적 복사로 안전성 보장
+- Git의 내부 구조(Blob/Tree/Commit/Ref/Index)를 이해하고 직접 구현한다.
+- `.javaGit` 디렉토리에 Git 메타데이터를 저장한다.
+- 실제 Git과 호환 가능한 SHA-1 기반 객체 저장 구조를 따른다.
+- 이전 프리코스 미션 원칙(도메인 검증, 일관된 에러 포맷 등)을 준수한다.
 
 ## 기능 목록
 
 ### 메인 로직
 - [x] 저장소 초기화 기능 (git init)
-    - [x] `.jgit` 디렉토리 생성
+    - [x] `.javaGit` 디렉토리 생성
     - [x] `objects` 디렉토리 생성
     - [x] `refs/heads` 디렉토리 생성
     - [x] `HEAD` 파일 생성 및 기본 브랜치 참조 설정
@@ -26,7 +24,7 @@
     - [x] SHA-1 해시 계산 및 객체 저장
     - [x] Index에 파일 경로와 해시 매핑 저장
 - [x] Git 객체 저장
-    - [x] Blob 객체를 `.jgit/objects` 디렉토리에 저장
+    - [x] Blob/Tree/Commit 객체를 `.javaGit/objects` 디렉토리에 저장
     - [x] SHA-1 해시 기반 디렉토리 구조 (앞 2자리/나머지)
     - [x] Index 파일 읽기/쓰기
 
@@ -62,14 +60,17 @@
 - [x] git init
 - [x] git add
 - [x] git commit
-- [ ] git push
-- [ ] git pull
 - [x] git status
 - [x] git log
 - [x] git branch
 - [x] git checkout
-- [x] git merge
-- [ ] git clone
+- [x] git merge (Fast-Forward only)
+- [x] git push (로컬 디렉터리를 remote로 사용하는 push)
+- [x] git pull (로컬 디렉터리를 remote로 사용하는 pull)
+- [x] git clone (로컬 디렉터리 remote로부터 메타데이터만 clone)
+- [x] git serve-http (HTTP 원격 서버 실행)
+- [x] git push-http (HTTP 원격 저장소로 push, FF-only)
+- [x] git pull-http (HTTP 원격 저장소에서 pull, FF-only)
 
 ## 기능 구현 현황
 
@@ -82,17 +83,17 @@
 - [x] Head 객체 구현
 
 ### 명령어 구현
-- [x] init: 저장소 초기화 (.jgit 디렉토리 생성)
+- [x] init: 저장소 초기화 (`.javaGit` 디렉토리 생성)
 - [x] add: 파일을 스테이징 영역에 추가
 - [x] commit: 스테이징된 파일들을 커밋
 - [x] status: 현재 상태 확인
 - [x] log: 커밋 히스토리 출력
 - [x] branch: 브랜치 생성/조회
 - [x] checkout: 브랜치 전환
-- [x] merge: 브랜치 병합
-- [ ] push: 원격 저장소에 푸시
-- [ ] pull: 원격 저장소에서 풀
-- [ ] clone: 원격 저장소 클론
+- [x] merge: 브랜치 병합 (Fast-Forward only)
+- [x] push: 로컬 디렉터리를 remote로 사용하는 push (Fast-Forward only)
+- [x] pull: 로컬 디렉터리를 remote로 사용하는 pull (Fast-Forward only)
+- [x] clone: 로컬 디렉터리 remote로부터 `.javaGit` 메타데이터만 복제 (워킹 트리 체크아웃 없음)
 
 ### 입력 및 출력
 - [x] CLI 명령어 파싱
@@ -109,42 +110,49 @@
 
 ## 프로젝트 구조
 
-### Application
+### Application / Config
 #### Main:
 - 프로그램 시작점
-- 현재 작업 디렉토리 경로 획득
-- Appconfig로 객체 생성 후 GitController.run() 실행
+- 현재 작업 디렉토리 경로(Path) 획득
+- `Appconfig`로 객체 생성 후 `GitController.run()` 실행
 
-### Config
 #### Appconfig:
 - 수동 DI 구성
-- Repository 및 Service 인스턴스 생성/주입
-- GitController 생성 및 의존성 주입
+- Repository, Service, Remote Service 인스턴스 생성/주입
+- `GitController` 생성 및 의존성 주입
 
 ### Controller
 #### GitController:
 - CLI 명령어 파싱 및 처리
-- init, add 명령어 처리
-- 서비스 호출 및 결과 출력
+- Command Handler(`InitCmd`, `AddCmd`, `CommitCmd`, `BranchCmd`, `CheckoutCmd`, `MergeCmd`, `StatusCmd`, `LogCmd`, `PushFsCmd`, `PullFsCmd`, `CloneFsCmd`, `ServeHttpCmd`, `PushHttpCmd`, `PullHttpCmd`) 위임
+- 서비스/리모트 서비스 호출 및 결과 출력
 - 사용법 출력
 
 ### Service
-#### InitService:
-- 저장소 초기화 인터페이스
-#### InitServiceImpl:
-- RepositoryInitializer를 사용하여 저장소 초기화
 #### FileSystemInitService:
-- 파일 시스템에 `.jgit` 디렉토리 구조 생성
-- objects, refs/heads 디렉토리 생성
-- HEAD, index 파일 생성
+- 파일 시스템에 `.javaGit` 디렉토리 구조 생성
+- `objects`, `refs/heads` 디렉토리 생성
+- `HEAD`, `index` 파일 생성
+#### InitService:
+- 작업 디렉토리 기준으로 `FileSystemInitService`를 호출하여 저장소 초기화
 #### AddService:
-- 파일 스테이징 인터페이스
-#### AddServiceImpl:
-- 파일 경로 검증
-- 파일을 Blob으로 변환하여 ObjectRepository에 저장
-- Index에 파일 경로와 SHA-1 해시 매핑 저장
-#### RepositoryInitializer:
-- 저장소 초기화 전략 인터페이스
+- 파일 경로 검증 및 실제 파일 시스템 검사
+- 파일을 Blob으로 변환하여 `ObjectWriter`에 저장
+- `IndexRepository`에 파일 경로와 SHA-1 해시 매핑 저장
+#### CommitService:
+- Index에서 스테이징된 파일들을 읽어 Tree/Commit 생성 및 저장
+- 현재 브랜치의 HEAD를 새 Commit으로 갱신
+- 커밋 후 Index 초기화
+#### StatusService:
+- 워킹 트리 / Index / HEAD 간 차이를 비교해 status 정보 생성
+#### LogService:
+- HEAD부터 부모 체인을 따라 커밋 로그 생성
+#### BranchService / CheckoutService / MergeService:
+- 브랜치 생성/조회, 안전한 브랜치 전환, Fast-Forward 기반 브랜치 병합 제공
+#### PushService / PullService / CloneService:
+- 로컬 디렉터리를 remote로 사용하는 push/pull/clone 기능 제공
+#### HttpPushService / HttpPullService:
+- HTTP 기반 원격 저장소와의 push/pull (Fast-Forward only) 구현
 
 ### Domain
 #### Blob:
@@ -152,30 +160,30 @@
 - byte[] 형태로 파일 내용 저장
 - null 및 빈 파일 검증
 - 방어적 복사로 불변성 보장
+#### Tree:
+- Git Tree 객체 (디렉터리 스냅샷)
+- 파일/디렉터리 경로와 객체 OID 매핑 저장
+#### Commit:
+- Git Commit 객체
+- tree OID, parent OID, author, message, timestamp 보유
 #### Index:
 - Git Index (스테이징 영역)
 - 파일 경로와 SHA-1 해시의 매핑 저장
 - Map<String, String> 형태 (path -> sha)
 - null 및 빈 entry 검증
 - 방어적 복사로 불변성 보장
+#### Head:
+- 현재 체크아웃된 브랜치 참조(예: `refs/heads/master`)
 
 ### Repository
-#### ObjectRepository:
-- Blob 객체 저장소 인터페이스
-- writeObject(Blob): SHA-1 해시 반환
-#### FileObjectRepository:
-- 파일 시스템 기반 Blob 저장소 구현
-- `.jgit/objects/{sha[0:2]}/{sha[2:]}` 경로에 저장
-- SHA-1 해시 계산 및 저장
-#### IndexRepository:
-- Index 저장소 인터페이스
-- read(): Index 읽기
-- write(Index): Index 쓰기
-#### FileIndexRepository:
-- 파일 시스템 기반 Index 저장소 구현
-- `.jgit/index` 파일에 저장
-- 파일 형식: `{sha} {path}\n`
-- 파일 파싱 및 직렬화
+#### ObjectWriter / ObjectReader:
+- Blob/Tree/Commit 등 Git 객체를 `.javaGit/objects/{sha[0:2]}/{sha[2:]}` 구조로 읽고 쓰는 추상화
+#### FileObjectWriter / FileObjectReader:
+- 파일 시스템 기반 ObjectWriter/ObjectReader 구현
+#### IndexRepository / FileIndexRepository:
+- `.javaGit/index` 파일을 기반으로 Index를 읽고/쓰는 저장소
+#### RefRepository / FileRefRepository:
+- `.javaGit/HEAD`, `.javaGit/refs/heads/{branch}` 파일을 통해 브랜치 HEAD를 읽고/쓰는 저장소
 
 ### Exception
 #### ErrorCode(enum):
