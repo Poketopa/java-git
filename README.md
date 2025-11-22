@@ -25,10 +25,13 @@
 - `git status`, `git log`
 - `git branch [name]`, `git checkout <branch>`
 - `git merge <branch>` (FF-only)
+- `git serve-http <port>`
+- `git push-http <url> <branch>`
+- `git pull-http <url> <branch>`
 
 ## 버전 히스토리
 - v1.0.0: 네트워크 연결 없이 로컬 Git 명령어(init/add/commit/status/log/branch/checkout/merge: FF) 구현
-- v1.1.0: Remote over HTTP (push/pull/clone FF-only) — 예정
+- v1.1.0: Remote over HTTP (serve-http/push-http/pull-http FF-only) 구현 완료
 
 ## 기능 목록
 
@@ -107,8 +110,11 @@
 - [x] git log
 - [x] git branch
 - [x] git checkout
-- [ ] git merge
+- [x] git merge (Fast-Forward only)
 - [ ] git clone
+- [x] git serve-http
+- [x] git push-http
+- [x] git pull-http
 
 ## 기능 구현 현황
 
@@ -127,9 +133,10 @@
 - [x] log: 커밋 히스토리 출력
 - [x] branch: 브랜치 생성/조회
 - [x] checkout: 브랜치 전환 (안전 전환: HEAD만 변경, dirty 시 차단)
-- [ ] merge: 브랜치 병합
-- [ ] push: 원격 저장소에 푸시
-- [ ] pull: 원격 저장소에서 풀
+- [x] merge: 브랜치 병합 (Fast-Forward only)
+- [x] serve-http: HTTP 원격 서버 실행
+- [x] push-http: 원격 저장소에 푸시 (Fast-Forward only)
+- [x] pull-http: 원격 저장소에서 풀 (Fast-Forward only)
 - [ ] clone: 원격 저장소 클론
 
 ### 입력 및 출력
@@ -164,7 +171,7 @@
 ### Controller
 #### GitController:
 - CLI 명령어 파싱 및 처리
-- init, add, commit 명령어 처리
+- **Command Pattern 적용**: 각 명령어(init, add, commit 등)를 별도의 Handler 클래스(`InitCmd`, `AddCmd` 등)로 분리하여 관리
 - UseCase 호출 및 결과 출력
 - 사용법 출력
 
