@@ -75,7 +75,6 @@
 ## 기능 구현 현황
 
 ### 필요 객체 구현
-- [ ] Object 객체 구현
 - [x] Blob 객체 구현
 - [x] Tree 객체 구현
 - [x] Commit 객체 구현
@@ -94,6 +93,9 @@
 - [x] push: 로컬 디렉터리를 remote로 사용하는 push (Fast-Forward only)
 - [x] pull: 로컬 디렉터리를 remote로 사용하는 pull (Fast-Forward only)
 - [x] clone: 로컬 디렉터리 remote로부터 `.javaGit` 메타데이터만 복제 (워킹 트리 체크아웃 없음)
+- [x] serve-http: HTTP 원격 서버 실행
+- [x] push-http: HTTP 원격 저장소에 푸시 (Fast-Forward only)
+- [x] pull-http: HTTP 원격 저장소에서 풀 (Fast-Forward only)
 
 ### 입력 및 출력
 - [x] CLI 명령어 파싱
