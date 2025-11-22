@@ -6,6 +6,10 @@ import main.java.app.view.OutputView;
 import java.util.Objects;
 
 public final class BranchCmd {
+    private static final int LIST_ONLY_ARGS_LENGTH = 1;
+    private static final int CREATE_BRANCH_ARGS_LENGTH = 2;
+    private static final int BRANCH_NAME_INDEX = 1;
+
     private final BranchService branchService;
     private final OutputView outputView;
 
@@ -15,23 +19,20 @@ public final class BranchCmd {
     }
 
     public void execute(String[] args) {
-        if (args.length == 1) {
+        if (args.length == LIST_ONLY_ARGS_LENGTH) {
             outputView.showBranches(branchService.list());
             return;
         }
-        if (args.length == 2) {
+        if (args.length == CREATE_BRANCH_ARGS_LENGTH) {
+            String branchName = args[BRANCH_NAME_INDEX];
             try {
-                branchService.create(args[1]);
-                outputView.showBranchCreated(args[1]);
+                branchService.create(branchName);
+                outputView.showBranchCreated(branchName);
             } catch (IllegalArgumentException e) {
-                outputView.showBranchAlreadyExists(args[1]);
+                outputView.showBranchAlreadyExists(branchName);
             }
             return;
         }
         outputView.showUsage();
     }
 }
-
-
-
-
