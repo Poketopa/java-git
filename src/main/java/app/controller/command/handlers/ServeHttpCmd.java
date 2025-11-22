@@ -26,11 +26,16 @@ public final class ServeHttpCmd {
             return;
         }
         HttpRemoteServer server = new HttpRemoteServer(Paths.get(System.getProperty("user.dir")));
-        Thread t = new Thread(() -> server.start(port));
-        t.setDaemon(true);
-        t.start();
+        server.start(port);
         outputView.showServeHttpStarted(port);
+        // Keep running
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }
+
 
 
