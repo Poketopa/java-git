@@ -47,7 +47,8 @@ public final class CommitService {
         // 6) HEAD 업데이트
         updateHead(commitHash);
         // 7) Index 초기화
-        clearIndex();
+        // 7) Index 초기화 (제거: Index는 커밋 후에도 유지되어야 함)
+        // clearIndex();
     }
 
     // 커밋 메시지/작성자 필수값 검증
