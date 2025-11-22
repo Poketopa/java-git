@@ -8,16 +8,6 @@
 - 이전 프리코스 미션 원칙 준수
 - DDD 패턴 적용
 
-## v1.0.0 — 로컬 커맨드 구현
-- init: `.javaGit` 디렉토리/구조 생성
-- add: 파일을 Blob으로 저장하고 Index에 path→sha 반영
-- commit: Tree/Commit 생성, HEAD/브랜치 갱신, Index 초기화
-- status: Working ↔ Index ↔ HEAD 3-way 비교
-- log: HEAD부터 부모 체인을 따라 요약 출력
-- branch: 브랜치 목록/생성
-- checkout: 안전 전환(더러운 워킹 트리 차단)
-- merge: Fast-forward만 지원
-
 ## 사용법(요약)
 - `git init`
 - `git add <path> [<path>...]`
@@ -28,10 +18,6 @@
 - `git serve-http <port>`
 - `git push-http <url> <branch>`
 - `git pull-http <url> <branch>`
-
-## 버전 히스토리
-- v1.0.0: 네트워크 연결 없이 로컬 Git 명령어(init/add/commit/status/log/branch/checkout/merge: FF) 구현
-- v1.1.0: Remote over HTTP (serve-http/push-http/pull-http FF-only) 구현 완료
 
 ## 기능 목록
 
