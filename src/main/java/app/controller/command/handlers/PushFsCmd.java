@@ -7,6 +7,10 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 public final class PushFsCmd {
+    private static final int EXPECTED_ARGUMENTS = 3;
+    private static final int REMOTE_PATH_INDEX = 1;
+    private static final int BRANCH_NAME_INDEX = 2;
+
     private final PushService pushService;
     private final OutputView outputView;
 
@@ -16,22 +20,28 @@ public final class PushFsCmd {
     }
 
     public void execute(String[] args) {
-        if (args.length != 3) {
+        if (args.length != EXPECTED_ARGUMENTS) {
             outputView.showPushUsage();
             return;
         }
-        Path remote = Path.of(args[1]);
-        String branch = args[2];
-        var result = pushService.push(remote, branch);
-        switch (result) {
-            case SUCCESS -> outputView.showPushSuccess(branch);
-            case ALREADY_UP_TO_DATE -> outputView.showPushUpToDate();
-            case REMOTE_REJECTED_NON_FF -> outputView.showPushRejectedNonFastForward();
-            case LOCAL_NO_COMMITS -> outputView.showPushLocalNoCommits();
+        Path remote = Path.of(args[REMOTE_PATH_INDEX]);
+        String branch = args[BRANCH_NAME_INDEX];
+        PushService.PushResult result = pushService.push(remote, branch);
+
+        if (result == PushService.PushResult.SUCCESS) {
+            outputView.showPushSuccess(branch);
+            return;
+        }
+        if (result == PushService.PushResult.ALREADY_UP_TO_DATE) {
+            outputView.showPushUpToDate();
+            return;
+        }
+        if (result == PushService.PushResult.REMOTE_REJECTED_NON_FF) {
+            outputView.showPushRejectedNonFastForward();
+            return;
+        }
+        if (result == PushService.PushResult.LOCAL_NO_COMMITS) {
+            outputView.showPushLocalNoCommits();
         }
     }
 }
-
-
-
-
