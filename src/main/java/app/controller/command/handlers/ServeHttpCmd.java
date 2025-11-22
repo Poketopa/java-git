@@ -7,6 +7,10 @@ import java.nio.file.Paths;
 import java.util.Objects;
 
 public final class ServeHttpCmd {
+    private static final int EXPECTED_ARGUMENTS = 2;
+    private static final int PORT_ARGUMENT_INDEX = 1;
+    private static final String USER_DIR_PROPERTY = "user.dir";
+
     private final OutputView outputView;
 
     public ServeHttpCmd(OutputView outputView) {
@@ -14,18 +18,18 @@ public final class ServeHttpCmd {
     }
 
     public void execute(String[] args) {
-        if (args.length != 2) {
+        if (args.length != EXPECTED_ARGUMENTS) {
             outputView.showServeHttpUsage();
             return;
         }
         int port;
         try {
-            port = Integer.parseInt(args[1]);
+            port = Integer.parseInt(args[PORT_ARGUMENT_INDEX]);
         } catch (NumberFormatException e) {
             outputView.showServeHttpUsage();
             return;
         }
-        HttpRemoteServer server = new HttpRemoteServer(Paths.get(System.getProperty("user.dir")));
+        HttpRemoteServer server = new HttpRemoteServer(Paths.get(System.getProperty(USER_DIR_PROPERTY)));
         server.start(port);
         outputView.showServeHttpStarted(port);
         // Keep running
@@ -36,7 +40,3 @@ public final class ServeHttpCmd {
         }
     }
 }
-
-
-
-
