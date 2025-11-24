@@ -2,7 +2,6 @@ package app.controller.command.handlers;
 
 import app.remote.http.HttpRemoteServer;
 import app.view.OutputView;
-
 import java.nio.file.Paths;
 import java.util.Objects;
 
@@ -32,7 +31,7 @@ public final class ServeHttpCmd {
         HttpRemoteServer server = new HttpRemoteServer(Paths.get(System.getProperty(USER_DIR_PROPERTY)));
         server.start(port);
         outputView.showServeHttpStarted(port);
-        
+
         try {
             Thread.currentThread().join();
         } catch (InterruptedException e) {

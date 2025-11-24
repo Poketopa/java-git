@@ -3,25 +3,15 @@ package app.service.remote.fs;
 import app.remote.FileRemoteClient;
 import app.repository.ObjectReader;
 import app.repository.RefRepository;
-
 import java.nio.file.Path;
 import java.util.Objects;
 
 
-
 public final class PushService {
-    public enum PushResult {
-        SUCCESS,
-        ALREADY_UP_TO_DATE,
-        REMOTE_REJECTED_NON_FF,
-        LOCAL_NO_COMMITS
-    }
-
+    private static final String PARENT_PREFIX = "parent ";
     private final RefRepository localRefRepository;
     private final ObjectReader localObjectReader;
     private final Path localRoot;
-    private static final String PARENT_PREFIX = "parent ";
-
     public PushService(RefRepository localRefRepository, ObjectReader localObjectReader, Path localRoot) {
         this.localRefRepository = Objects.requireNonNull(localRefRepository, "localRefRepository");
         this.localObjectReader = Objects.requireNonNull(localObjectReader, "localObjectReader");
@@ -47,7 +37,6 @@ public final class PushService {
             }
         }
 
-        
         remote.copyAllLocalObjectsToRemote(localRoot);
         remote.updateBranchHead(branch, localHead);
         return PushResult.SUCCESS;
@@ -78,5 +67,12 @@ public final class PushService {
             }
         }
         return null;
+    }
+
+    public enum PushResult {
+        SUCCESS,
+        ALREADY_UP_TO_DATE,
+        REMOTE_REJECTED_NON_FF,
+        LOCAL_NO_COMMITS
     }
 }

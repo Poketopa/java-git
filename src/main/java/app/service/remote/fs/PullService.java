@@ -3,24 +3,14 @@ package app.service.remote.fs;
 import app.remote.FileRemoteClient;
 import app.repository.ObjectReader;
 import app.repository.RefRepository;
-
 import java.nio.file.Path;
 import java.util.Objects;
 
 
-
 public final class PullService {
-    public enum PullResult {
-        SUCCESS,
-        ALREADY_UP_TO_DATE,
-        REMOTE_NO_COMMITS,
-        NOT_FAST_FORWARD
-    }
-
     private final RefRepository localRefRepository;
     private final ObjectReader localObjectReader;
     private final Path localRoot;
-
     public PullService(RefRepository localRefRepository, ObjectReader localObjectReader, Path localRoot) {
         this.localRefRepository = Objects.requireNonNull(localRefRepository, "localRefRepository");
         this.localObjectReader = Objects.requireNonNull(localObjectReader, "localObjectReader");
@@ -41,10 +31,8 @@ public final class PullService {
             return PullResult.ALREADY_UP_TO_DATE;
         }
 
-        
         remote.copyAllRemoteObjectsToLocal(localRoot);
 
-        
         if (localHead == null || localHead.isBlank() || isAncestor(localHead, remoteHead)) {
             localRefRepository.updateBranchHead(branch, remoteHead);
             return PullResult.SUCCESS;
@@ -77,5 +65,12 @@ public final class PullService {
             }
         }
         return null;
+    }
+
+    public enum PullResult {
+        SUCCESS,
+        ALREADY_UP_TO_DATE,
+        REMOTE_NO_COMMITS,
+        NOT_FAST_FORWARD
     }
 }

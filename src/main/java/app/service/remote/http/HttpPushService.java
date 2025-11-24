@@ -3,7 +3,6 @@ package app.service.remote.http;
 import app.remote.http.HttpRemoteClient;
 import app.repository.ObjectReader;
 import app.repository.RefRepository;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,21 +11,12 @@ import java.util.Objects;
 
 
 public final class HttpPushService {
-    public enum Result {
-        SUCCESS,
-        ALREADY_UP_TO_DATE,
-        REMOTE_REJECTED_NON_FF,
-        LOCAL_NO_COMMITS
-    }
-
     private static final String DOT_JAVA_GIT = ".javaGit";
     private static final String OBJECTS = "objects";
     private static final String PARENT_PREFIX = "parent ";
-
     private final RefRepository localRefRepository;
     private final ObjectReader localObjectReader;
     private final Path localRoot;
-
     public HttpPushService(RefRepository localRefRepository, ObjectReader localObjectReader, Path localRoot) {
         this.localRefRepository = Objects.requireNonNull(localRefRepository, "localRefRepository");
         this.localObjectReader = Objects.requireNonNull(localObjectReader, "localObjectReader");
@@ -48,7 +38,6 @@ public final class HttpPushService {
             return Result.REMOTE_REJECTED_NON_FF;
         }
 
-        
         java.util.Set<String> remoteObjects = remote.listObjects();
         Path objectsDir = localRoot.resolve(DOT_JAVA_GIT).resolve(OBJECTS);
         if (Files.exists(objectsDir)) {
@@ -106,5 +95,12 @@ public final class HttpPushService {
             }
         }
         return null;
+    }
+
+    public enum Result {
+        SUCCESS,
+        ALREADY_UP_TO_DATE,
+        REMOTE_REJECTED_NON_FF,
+        LOCAL_NO_COMMITS
     }
 }

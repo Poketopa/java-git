@@ -7,15 +7,10 @@ import app.exception.ErrorCode;
 import app.repository.IndexRepository;
 import app.repository.ObjectWriter;
 import app.repository.RefRepository;
-
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
-
-
-
-
 
 
 public final class CommitService {
@@ -24,7 +19,8 @@ public final class CommitService {
     private final RefRepository refRepository;
     private final Path rootDirectoryPath;
 
-    public CommitService(IndexRepository indexRepository, ObjectWriter objectWriter, RefRepository refRepository, Path rootDirectoryPath) {
+    public CommitService(IndexRepository indexRepository, ObjectWriter objectWriter, RefRepository refRepository,
+                         Path rootDirectoryPath) {
         this.indexRepository = Objects.requireNonNull(indexRepository, "indexRepository");
         this.objectWriter = Objects.requireNonNull(objectWriter, "objectWriter");
         this.refRepository = Objects.requireNonNull(refRepository, "refRepository");
@@ -32,26 +28,25 @@ public final class CommitService {
     }
 
     public void commit(String message, String author) {
-        
+
         validate(message, author);
-        
+
         Index index = indexRepository.read();
         ensureHasStagedFiles(index);
-        
+
         Tree tree = new Tree(index.stagedFiles());
         String treeHash = writeTree(tree);
-        
+
         String parentCommitHash = readCurrentHeadCommit();
-        
+
         String commitHash = writeCommit(new Commit(message, treeHash, emptyToNull(parentCommitHash), author));
-        
+
         updateHead(commitHash);
-        
-        
-        
+
+
     }
 
-    
+
     private void validate(String message, String author) {
         if (message == null || message.isBlank()) {
             throw new IllegalArgumentException(ErrorCode.COMMIT_MESSAGE_EMPTY.message());
@@ -61,7 +56,7 @@ public final class CommitService {
         }
     }
 
-    
+
     private void ensureHasStagedFiles(Index index) {
         Map<String, String> stagedFiles = index.stagedFiles();
         if (stagedFiles == null || stagedFiles.isEmpty()) {
@@ -74,8 +69,7 @@ public final class CommitService {
         return objectWriter.write(treeContent);
     }
 
-    
-    
+
     private String buildTreeContent(Tree tree) {
         StringBuilder contentBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : tree.entries().entrySet()) {
@@ -88,7 +82,7 @@ public final class CommitService {
         contentBuilder.append("blob ").append(entry.getValue()).append(' ').append(entry.getKey()).append('\n');
     }
 
-    
+
     private String readCurrentHeadCommit() {
         String branch = refRepository.readCurrentBranch();
         return refRepository.readBranchHead(branch);
@@ -99,9 +93,7 @@ public final class CommitService {
         return objectWriter.write(commitContent);
     }
 
-    
-    
-    
+
     private String buildCommitContent(Commit commit) {
         StringBuilder contentBuilder = new StringBuilder();
         contentBuilder.append("tree ").append(commit.treeOid()).append('\n');

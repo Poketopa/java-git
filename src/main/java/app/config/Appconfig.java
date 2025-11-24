@@ -1,7 +1,6 @@
 package app.config;
 
 import app.controller.GitController;
-import app.view.OutputView;
 import app.repository.FileIndexRepository;
 import app.repository.FileObjectReader;
 import app.repository.FileObjectWriter;
@@ -11,23 +10,22 @@ import app.repository.ObjectReader;
 import app.repository.ObjectWriter;
 import app.repository.RefRepository;
 import app.service.AddService;
+import app.service.BranchService;
+import app.service.CheckoutService;
 import app.service.CommitService;
 import app.service.FileSystemInitService;
 import app.service.InitService;
-import app.service.StatusService;
 import app.service.LogService;
-import app.service.BranchService;
-import app.service.CheckoutService;
 import app.service.MergeService;
-import app.service.remote.fs.PushService;
-import app.service.remote.fs.PullService;
+import app.service.StatusService;
 import app.service.remote.fs.CloneService;
-import app.service.remote.http.HttpPushService;
+import app.service.remote.fs.PullService;
+import app.service.remote.fs.PushService;
 import app.service.remote.http.HttpPullService;
-
+import app.service.remote.http.HttpPushService;
+import app.view.OutputView;
 import java.nio.file.Path;
 import java.util.Objects;
-
 
 
 public final class Appconfig {
@@ -38,7 +36,9 @@ public final class Appconfig {
     }
 
     public GitController gitController() {
-        return new GitController(initService(), addService(), commitService(), statusService(), logService(), branchService(), checkoutService(), mergeService(), pushService(), pullService(), cloneService(), httpPushService(), httpPullService(), outputView());
+        return new GitController(initService(), addService(), commitService(), statusService(), logService(),
+                branchService(), checkoutService(), mergeService(), pushService(), pullService(), cloneService(),
+                httpPushService(), httpPullService(), outputView());
     }
 
     private InitService initService() {

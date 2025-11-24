@@ -2,7 +2,6 @@ package app.controller.command.handlers;
 
 import app.service.remote.fs.PullService;
 import app.view.OutputView;
-
 import java.nio.file.Path;
 import java.util.Objects;
 

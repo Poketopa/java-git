@@ -1,11 +1,8 @@
 package app.service;
 
 import app.repository.RefRepository;
-
 import java.util.List;
 import java.util.Objects;
-
-
 
 
 public final class BranchService {
@@ -26,7 +23,7 @@ public final class BranchService {
         refRepository.createBranch(branchName, base);
     }
 
-    
+
     private void validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("[ERROR] 브랜치 이름이 비어 있습니다.");

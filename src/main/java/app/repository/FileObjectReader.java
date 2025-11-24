@@ -4,7 +4,6 @@ import app.domain.Blob;
 import app.domain.Commit;
 import app.domain.Tree;
 import app.exception.ErrorCode;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -75,7 +74,7 @@ public final class FileObjectReader implements ObjectReader {
             if (line == null || line.isBlank()) {
                 continue;
             }
-            
+
             int firstSpace = line.indexOf(' ');
             if (firstSpace <= 0) {
                 throw new IllegalArgumentException(ErrorCode.MALFORMED_TREE_OBJECT.message());
@@ -95,20 +94,6 @@ public final class FileObjectReader implements ObjectReader {
         return map;
     }
 
-    private static final class ParsedCommit {
-        final String treeSha;
-        final String parentHash;
-        final String author;
-        final String message;
-
-        ParsedCommit(String treeSha, String parentHash, String author, String message) {
-            this.treeSha = treeSha;
-            this.parentHash = parentHash;
-            this.author = author;
-            this.message = message;
-        }
-    }
-
     private ParsedCommit parseCommitContent(String content) {
         if (content == null || content.isBlank()) {
             throw new IllegalArgumentException(ErrorCode.MALFORMED_COMMIT_OBJECT.message());
@@ -121,7 +106,7 @@ public final class FileObjectReader implements ObjectReader {
         for (; i < lines.length; i++) {
             String line = lines[i];
             if (line == null || line.isBlank()) {
-                i++; 
+                i++;
                 break;
             }
             if (line.startsWith("tree ")) {
@@ -137,7 +122,7 @@ public final class FileObjectReader implements ObjectReader {
                 continue;
             }
             if (line.startsWith("date ")) {
-                
+
                 continue;
             }
         }
@@ -152,5 +137,19 @@ public final class FileObjectReader implements ObjectReader {
             throw new IllegalArgumentException(ErrorCode.MALFORMED_COMMIT_OBJECT.message());
         }
         return new ParsedCommit(treeSha, parentHash, author, messageBuilder.toString());
+    }
+
+    private static final class ParsedCommit {
+        final String treeSha;
+        final String parentHash;
+        final String author;
+        final String message;
+
+        ParsedCommit(String treeSha, String parentHash, String author, String message) {
+            this.treeSha = treeSha;
+            this.parentHash = parentHash;
+            this.author = author;
+            this.message = message;
+        }
     }
 }

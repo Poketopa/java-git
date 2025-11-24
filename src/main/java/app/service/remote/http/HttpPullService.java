@@ -1,28 +1,19 @@
 package app.service.remote.http;
 
 import app.remote.http.HttpRemoteClient;
+import app.repository.FileObjectWriter;
 import app.repository.ObjectReader;
 import app.repository.ObjectWriter;
 import app.repository.RefRepository;
-import app.repository.FileObjectWriter;
-
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 
 
 public final class HttpPullService {
-    public enum Result {
-        SUCCESS,
-        ALREADY_UP_TO_DATE,
-        REMOTE_NO_COMMITS,
-        NOT_FAST_FORWARD
-    }
-
     private final RefRepository localRefRepository;
     private final ObjectReader localObjectReader;
     private final ObjectWriter localObjectWriter;
-
     public HttpPullService(RefRepository localRefRepository, ObjectReader localObjectReader, Path localRoot) {
         this.localRefRepository = Objects.requireNonNull(localRefRepository, "localRefRepository");
         this.localObjectReader = Objects.requireNonNull(localObjectReader, "localObjectReader");
@@ -56,7 +47,8 @@ public final class HttpPullService {
             String parent = parseParent(cursor);
             String treeSha = parseTree(cursor);
             ensureObject(remote, treeSha);
-            String treeContent = new String(localObjectReader.readRaw(treeSha), java.nio.charset.StandardCharsets.UTF_8);
+            String treeContent = new String(localObjectReader.readRaw(treeSha),
+                    java.nio.charset.StandardCharsets.UTF_8);
             for (String line : treeContent.split("\n")) {
                 if (!line.startsWith("blob ")) {
                     continue;
@@ -124,5 +116,12 @@ public final class HttpPullService {
             }
         }
         return null;
+    }
+
+    public enum Result {
+        SUCCESS,
+        ALREADY_UP_TO_DATE,
+        REMOTE_NO_COMMITS,
+        NOT_FAST_FORWARD
     }
 }

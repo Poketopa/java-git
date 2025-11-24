@@ -2,7 +2,6 @@ package app;
 
 import app.config.Appconfig;
 import app.controller.GitController;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 

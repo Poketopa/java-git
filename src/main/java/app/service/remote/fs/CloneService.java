@@ -2,7 +2,6 @@ package app.service.remote.fs;
 
 import app.exception.ErrorCode;
 import app.remote.FileRemoteClient;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -10,16 +9,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 
-
-
 public final class CloneService {
-    public enum CloneResult {
-        SUCCESS,
-        REMOTE_NOT_FOUND,
-        TARGET_EXISTS_NOT_EMPTY,
-        REMOTE_NO_COMMITS
-    }
-
     private static final String DOT_JAVA_GIT = ".javaGit";
     private static final String REFS = "refs";
     private static final String HEADS = "heads";
@@ -41,15 +31,13 @@ public final class CloneService {
             throw new IllegalArgumentException(ErrorCode.FILE_IO_ERROR.message(), e);
         }
 
-        
         FileRemoteClient remote = new FileRemoteClient(remoteRoot);
         remote.ensureInitialized();
-        
+
         if (!Files.exists(remoteRoot.resolve(DOT_JAVA_GIT).resolve(HEAD))) {
             return CloneResult.REMOTE_NO_COMMITS;
         }
 
-        
         Path targetJavaGit = targetRoot.resolve(DOT_JAVA_GIT);
         Path targetRefsHeads = targetJavaGit.resolve(REFS).resolve(HEADS);
         try {
@@ -59,11 +47,10 @@ public final class CloneService {
             throw new IllegalArgumentException(ErrorCode.FILE_IO_ERROR.message(), e);
         }
 
-        
         remote.copyAllRemoteObjectsToLocal(targetRoot);
-        
+
         copyDirectory(remoteRoot.resolve(DOT_JAVA_GIT).resolve(REFS).resolve(HEADS), targetRefsHeads);
-        
+
         copyHead(remoteRoot.resolve(DOT_JAVA_GIT).resolve(HEAD), targetJavaGit.resolve(HEAD));
 
         return CloneResult.SUCCESS;
@@ -116,5 +103,12 @@ public final class CloneService {
         } catch (IOException e) {
             throw new IllegalArgumentException(ErrorCode.FILE_IO_ERROR.message(), e);
         }
+    }
+
+    public enum CloneResult {
+        SUCCESS,
+        REMOTE_NOT_FOUND,
+        TARGET_EXISTS_NOT_EMPTY,
+        REMOTE_NO_COMMITS
     }
 }

@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 
 
-
 public final class HttpRemoteClient {
     private static final String CONTENT_TYPE_TEXT = "text/plain; charset=utf-8";
     private static final String CONTENT_TYPE_OCTET = "application/octet-stream";

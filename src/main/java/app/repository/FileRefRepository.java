@@ -1,7 +1,6 @@
 package app.repository;
 
 import app.exception.ErrorCode;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,7 +8,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 
 
 public final class FileRefRepository implements RefRepository {
@@ -24,9 +22,7 @@ public final class FileRefRepository implements RefRepository {
         this.rootDirectoryPath = Objects.requireNonNull(rootDirectoryPath, "rootDirectoryPath");
     }
 
-    
-    
-    
+
     @Override
     public String readCurrentBranch() {
         Path headFilePath = rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(HEAD);
@@ -38,8 +34,7 @@ public final class FileRefRepository implements RefRepository {
         }
     }
 
-    
-    
+
     private String parseBranchName(String headContent) {
         if (headContent == null || headContent.isBlank()) {
             throw new IllegalArgumentException(ErrorCode.HEAD_REF_EMPTY.message());
@@ -50,7 +45,7 @@ public final class FileRefRepository implements RefRepository {
         return headContent.substring(REF_PREFIX.length());
     }
 
-    
+
     @Override
     public String readBranchHead(String branchName) {
         Path branchFilePath = branchFilePath(branchName);
@@ -64,7 +59,7 @@ public final class FileRefRepository implements RefRepository {
         }
     }
 
-    
+
     @Override
     public void updateBranchHead(String branchName, String commitSha) {
         Path branchFilePath = branchFilePath(branchName);
@@ -75,7 +70,8 @@ public final class FileRefRepository implements RefRepository {
             }
             Path tmp = branchFilePath.resolveSibling(branchFilePath.getFileName().toString() + ".tmp");
             Files.writeString(tmp, commitSha == null ? "" : commitSha, StandardCharsets.UTF_8);
-            Files.move(tmp, branchFilePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING, java.nio.file.StandardCopyOption.ATOMIC_MOVE);
+            Files.move(tmp, branchFilePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING,
+                    java.nio.file.StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
             throw new IllegalArgumentException(ErrorCode.INDEX_FILE_WRITE_FAILED.message());
         }

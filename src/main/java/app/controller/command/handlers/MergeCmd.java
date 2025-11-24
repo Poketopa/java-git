@@ -2,7 +2,6 @@ package app.controller.command.handlers;
 
 import app.service.MergeService;
 import app.view.OutputView;
-
 import java.util.Objects;
 
 public final class MergeCmd {

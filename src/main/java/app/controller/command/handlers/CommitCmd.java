@@ -3,7 +3,6 @@ package app.controller.command.handlers;
 import app.service.CommitService;
 import app.util.CommandLineParser;
 import app.view.OutputView;
-
 import java.util.Objects;
 
 public final class CommitCmd {

@@ -1,35 +1,42 @@
 package app.controller;
 
+import app.controller.command.handlers.AddCmd;
+import app.controller.command.handlers.BranchCmd;
+import app.controller.command.handlers.CheckoutCmd;
+import app.controller.command.handlers.CloneFsCmd;
+import app.controller.command.handlers.CommitCmd;
+import app.controller.command.handlers.InitCmd;
+import app.controller.command.handlers.LogCmd;
+import app.controller.command.handlers.MergeCmd;
+import app.controller.command.handlers.PullFsCmd;
+import app.controller.command.handlers.PullHttpCmd;
+import app.controller.command.handlers.PushFsCmd;
+import app.controller.command.handlers.PushHttpCmd;
+import app.controller.command.handlers.ServeHttpCmd;
+import app.controller.command.handlers.StatusCmd;
 import app.service.AddService;
-import app.service.CommitService;
-import app.service.InitService;
-import app.service.StatusService;
-import app.service.LogService;
 import app.service.BranchService;
 import app.service.CheckoutService;
+import app.service.CommitService;
+import app.service.InitService;
+import app.service.LogService;
 import app.service.MergeService;
-import app.service.remote.fs.PushService;
-import app.service.remote.fs.PullService;
+import app.service.StatusService;
 import app.service.remote.fs.CloneService;
-import app.service.remote.http.HttpPushService;
+import app.service.remote.fs.PullService;
+import app.service.remote.fs.PushService;
 import app.service.remote.http.HttpPullService;
-import app.controller.command.handlers.*;
-import app.util.CommandLineParser;
+import app.service.remote.http.HttpPushService;
 import app.view.OutputView;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
 
 
 public final class GitController {
@@ -49,7 +56,7 @@ public final class GitController {
     private final CloneService cloneService;
     private final HttpPushService httpPushService;
     private final HttpPullService httpPullService;
-    
+
     private final InitCmd initCmd;
     private final AddCmd addCmd;
     private final CommitCmd commitCmd;
@@ -65,7 +72,11 @@ public final class GitController {
     private final PushHttpCmd pushHttpCmd;
     private final PullHttpCmd pullHttpCmd;
 
-    public GitController(InitService initService, AddService addService, CommitService commitService, StatusService statusService, LogService logService, BranchService branchService, CheckoutService checkoutService, MergeService mergeService, PushService pushService, PullService pullService, CloneService cloneService, HttpPushService httpPushService, HttpPullService httpPullService, OutputView outputView) {
+    public GitController(InitService initService, AddService addService, CommitService commitService,
+                         StatusService statusService, LogService logService, BranchService branchService,
+                         CheckoutService checkoutService, MergeService mergeService, PushService pushService,
+                         PullService pullService, CloneService cloneService, HttpPushService httpPushService,
+                         HttpPullService httpPullService, OutputView outputView) {
         this.initService = Objects.requireNonNull(initService, "initService");
         this.addService = Objects.requireNonNull(addService, "addService");
         this.commitService = Objects.requireNonNull(commitService, "commitService");
@@ -80,7 +91,7 @@ public final class GitController {
         this.httpPushService = Objects.requireNonNull(httpPushService, "httpPushService");
         this.httpPullService = Objects.requireNonNull(httpPullService, "httpPullService");
         this.outputView = Objects.requireNonNull(outputView, "outputView");
-        
+
         this.initCmd = new InitCmd(initService, outputView);
         this.addCmd = new AddCmd(addService, outputView);
         this.commitCmd = new CommitCmd(commitService, outputView);
@@ -97,7 +108,30 @@ public final class GitController {
         this.pullHttpCmd = new PullHttpCmd(httpPullService, outputView);
     }
 
-    
+    private static boolean equalsIgnoreCaseAny(String input, String a, String b) {
+        return input.equalsIgnoreCase(a) || input.equalsIgnoreCase(b);
+    }
+
+    private static String[] tokenize(String line) {
+
+        Matcher matcher = TOKEN_PATTERN.matcher(line);
+        List<String> tokens = new ArrayList<>();
+        while (matcher.find()) {
+            String quotedDouble = matcher.group(1);
+            if (quotedDouble != null) {
+                tokens.add(quotedDouble);
+                continue;
+            }
+            String quotedSingle = matcher.group(2);
+            if (quotedSingle != null) {
+                tokens.add(quotedSingle);
+                continue;
+            }
+            tokens.add(matcher.group());
+        }
+        return tokens.toArray(new String[0]);
+    }
+
     public void run(String[] args) {
         if (args == null || args.length == 0) {
             showUsage();
@@ -106,9 +140,6 @@ public final class GitController {
         dispatch(args);
     }
 
-    
-    
-    
     public void runConsole() {
         outputView.showWelcome();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -148,33 +179,6 @@ public final class GitController {
         } catch (IOException e) {
             outputView.showInputReadError(e.getMessage());
         }
-    }
-
-    private static boolean equalsIgnoreCaseAny(String input, String a, String b) {
-        return input.equalsIgnoreCase(a) || input.equalsIgnoreCase(b);
-    }
-
-    
-    
-    
-    private static String[] tokenize(String line) {
-        
-        Matcher matcher = TOKEN_PATTERN.matcher(line);
-        List<String> tokens = new ArrayList<>();
-        while (matcher.find()) {
-            String quotedDouble = matcher.group(1);
-            if (quotedDouble != null) {
-                tokens.add(quotedDouble);
-                continue;
-            }
-            String quotedSingle = matcher.group(2);
-            if (quotedSingle != null) {
-                tokens.add(quotedSingle);
-                continue;
-            }
-            tokens.add(matcher.group());
-        }
-        return tokens.toArray(new String[0]);
     }
 
     private void dispatch(String[] args) {

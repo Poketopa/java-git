@@ -1,9 +1,9 @@
 package app.domain;
 
+import app.exception.ErrorCode;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import app.exception.ErrorCode;
 
 public final class Index {
     private final Map<String, String> stagedFiles;

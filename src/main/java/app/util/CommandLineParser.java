@@ -8,8 +8,7 @@ public final class CommandLineParser {
     private CommandLineParser() {
     }
 
-    
-    
+
     public static String findOptionValue(String[] args, String option) {
         if (args == null || option == null) {
             return null;
@@ -22,8 +21,7 @@ public final class CommandLineParser {
         return null;
     }
 
-    
-    
+
     public static List<String> extractPaths(String[] args) {
         if (args == null || args.length <= 1) {
             return List.of();

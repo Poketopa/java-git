@@ -21,7 +21,7 @@ public final class HttpRemoteServerMain {
         HttpRemoteServer server = new HttpRemoteServer(root);
         server.start(port);
         System.out.println("HTTP 원격 서버 시작: 포트=" + port + " 루트=" + root);
-        
+
         try {
             Thread.currentThread().join();
         } catch (InterruptedException ignored) {

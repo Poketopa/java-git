@@ -1,17 +1,14 @@
 package app.remote.http;
 
+import app.exception.ErrorCode;
+import app.repository.FileObjectReader;
+import app.repository.FileRefRepository;
+import app.repository.ObjectReader;
+import app.repository.RefRepository;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import app.exception.ErrorCode;
-import app.repository.FileObjectReader;
-import app.repository.FileObjectWriter;
-import app.repository.FileRefRepository;
-import app.repository.ObjectReader;
-import app.repository.ObjectWriter;
-import app.repository.RefRepository;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -23,12 +20,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Objects;
-
-
-
-
-
-
 
 
 public final class HttpRemoteServer {
@@ -69,9 +60,11 @@ public final class HttpRemoteServer {
 
     private static final class RefsHandler implements HttpHandler {
         private final RefRepository refRepository;
+
         public RefsHandler(Path root) {
             this.refRepository = new FileRefRepository(root);
         }
+
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
@@ -99,10 +92,12 @@ public final class HttpRemoteServer {
     private static final class ObjectsHandler implements HttpHandler {
         private final Path root;
         private final ObjectReader objectReader;
+
         public ObjectsHandler(Path root) {
             this.root = root;
             this.objectReader = new FileObjectReader(root);
         }
+
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             String method = exchange.getRequestMethod().toUpperCase();
@@ -183,7 +178,7 @@ public final class HttpRemoteServer {
 
         private void handlePost(HttpExchange exchange, String oid) throws IOException {
             byte[] bytes = exchange.getRequestBody().readAllBytes();
-            
+
             if (!oidEqualsContentHash(oid, bytes)) {
                 exchange.sendResponseHeaders(400, -1);
                 return;
@@ -220,10 +215,12 @@ public final class HttpRemoteServer {
     private static final class UpdateRefHandler implements HttpHandler {
         private final RefRepository refRepository;
         private final ObjectReader objectReader;
+
         public UpdateRefHandler(Path root) {
             this.refRepository = new FileRefRepository(root);
             this.objectReader = new FileObjectReader(root);
         }
+
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
@@ -243,7 +240,7 @@ public final class HttpRemoteServer {
                 exchange.sendResponseHeaders(409, -1);
                 return;
             }
-            
+
             try {
                 if (newSha != null && !newSha.isBlank()) {
                     objectReader.readRaw(newSha);

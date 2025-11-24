@@ -2,7 +2,6 @@ package app.repository;
 
 import app.domain.Index;
 import app.exception.ErrorCode;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,19 +12,17 @@ import java.util.Map;
 import java.util.Objects;
 
 
-
 public final class FileIndexRepository implements IndexRepository {
     private static final String DOT_JAVA_GIT = ".javaGit";
     private static final String INDEX = "index";
-    
+
     private final Path rootDirectoryPath;
 
     public FileIndexRepository(Path rootDirectoryPath) {
         this.rootDirectoryPath = Objects.requireNonNull(rootDirectoryPath, "rootDirectoryPath");
     }
 
-    
-    
+
     @Override
     public Index read() {
         Path indexFilePath = getIndexFilePath();
@@ -35,9 +32,7 @@ public final class FileIndexRepository implements IndexRepository {
         return readIndexFile(indexFilePath);
     }
 
-    
-    
-    
+
     @Override
     public void write(Index index) {
         Path indexFilePath = getIndexFilePath();
@@ -47,12 +42,12 @@ public final class FileIndexRepository implements IndexRepository {
         writeIndexFile(indexFilePath, indexContent);
     }
 
-    
+
     private Path getIndexFilePath() {
         return rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(INDEX);
     }
 
-    
+
     private Index readIndexFile(Path indexFilePath) {
         try {
             List<String> indexFileLines = Files.readAllLines(indexFilePath, StandardCharsets.UTF_8);
@@ -63,7 +58,7 @@ public final class FileIndexRepository implements IndexRepository {
         }
     }
 
-    
+
     private Map<String, String> parseIndexLines(List<String> indexFileLines) {
         Map<String, String> stagedFilesMap = new LinkedHashMap<>();
         for (String line : indexFileLines) {
@@ -75,13 +70,12 @@ public final class FileIndexRepository implements IndexRepository {
         return stagedFilesMap;
     }
 
-    
+
     private boolean isBlankLine(String line) {
         return line == null || line.isBlank();
     }
 
-    
-    
+
     private void parseIndexLine(String line, Map<String, String> stagedFilesMap) {
         int spaceIndex = line.indexOf(' ');
         if (spaceIndex <= 0) {

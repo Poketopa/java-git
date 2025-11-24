@@ -1,19 +1,16 @@
 package app.remote;
 
 import app.exception.ErrorCode;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.EnumSet;
 import java.util.Objects;
-
-
 
 
 public final class FileRemoteClient {
@@ -67,7 +64,8 @@ public final class FileRemoteClient {
             }
             Path tmp = file.resolveSibling(file.getFileName().toString() + TEMP_SUFFIX);
             Files.writeString(tmp, commitSha == null ? "" : commitSha, StandardCharsets.UTF_8);
-            Files.move(tmp, file, java.nio.file.StandardCopyOption.REPLACE_EXISTING, java.nio.file.StandardCopyOption.ATOMIC_MOVE);
+            Files.move(tmp, file, java.nio.file.StandardCopyOption.REPLACE_EXISTING,
+                    java.nio.file.StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
             throw new IllegalArgumentException(ErrorCode.FILE_IO_ERROR.message(), e);
         }
@@ -91,29 +89,31 @@ public final class FileRemoteClient {
         }
         try {
             Files.createDirectories(toDir);
-            Files.walkFileTree(fromDir, EnumSet.noneOf(FileVisitOption.class), Integer.MAX_VALUE, new SimpleFileVisitor<>() {
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    Path relative = fromDir.relativize(dir);
-                    Path target = toDir.resolve(relative);
-                    Files.createDirectories(target);
-                    return FileVisitResult.CONTINUE;
-                }
+            Files.walkFileTree(fromDir, EnumSet.noneOf(FileVisitOption.class), Integer.MAX_VALUE,
+                    new SimpleFileVisitor<>() {
+                        @Override
+                        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+                                throws IOException {
+                            Path relative = fromDir.relativize(dir);
+                            Path target = toDir.resolve(relative);
+                            Files.createDirectories(target);
+                            return FileVisitResult.CONTINUE;
+                        }
 
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Path relative = fromDir.relativize(file);
-                    Path target = toDir.resolve(relative);
-                    Path parent = target.getParent();
-                    if (parent != null) {
-                        Files.createDirectories(parent);
-                    }
-                    if (!Files.exists(target)) {
-                        Files.copy(file, target);
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-            });
+                        @Override
+                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                            Path relative = fromDir.relativize(file);
+                            Path target = toDir.resolve(relative);
+                            Path parent = target.getParent();
+                            if (parent != null) {
+                                Files.createDirectories(parent);
+                            }
+                            if (!Files.exists(target)) {
+                                Files.copy(file, target);
+                            }
+                            return FileVisitResult.CONTINUE;
+                        }
+                    });
         } catch (IOException e) {
             throw new IllegalArgumentException(ErrorCode.FILE_IO_ERROR.message(), e);
         }

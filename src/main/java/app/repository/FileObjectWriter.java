@@ -1,7 +1,6 @@
 package app.repository;
 
 import app.exception.ErrorCode;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,7 +29,7 @@ public final class FileObjectWriter implements ObjectWriter {
         return objectHash;
     }
 
-    
+
     private String calculateSha1(byte[] objectContent) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
@@ -41,8 +40,7 @@ public final class FileObjectWriter implements ObjectWriter {
         }
     }
 
-    
-    
+
     private Path buildObjectFilePath(String objectHash) {
         Path objectsDirectoryPath = rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(OBJECTS);
         String hashPrefix = objectHash.substring(0, SHA_PREFIX_LENGTH);
@@ -51,7 +49,7 @@ public final class FileObjectWriter implements ObjectWriter {
         return objectSubDirectoryPath.resolve(hashSuffix);
     }
 
-    
+
     private void createObjectDirectory(Path objectDirectoryPath) {
         try {
             Files.createDirectories(objectDirectoryPath);
@@ -60,7 +58,7 @@ public final class FileObjectWriter implements ObjectWriter {
         }
     }
 
-    
+
     private void writeObjectFile(Path objectFilePath, byte[] objectContent) {
         if (Files.exists(objectFilePath)) {
             return;

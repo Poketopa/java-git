@@ -1,10 +1,10 @@
 package app.view;
 
-import app.service.StatusService;
 import app.service.LogService;
+import app.service.StatusService;
 
 public final class OutputView {
-    
+
     public void showWelcome() {
         System.out.println(Messages.REPL_WELCOME);
     }
@@ -26,7 +26,7 @@ public final class OutputView {
         System.err.println(Messages.REPL_INPUT_READ_ERROR + detail);
     }
 
-    
+
     public void showUsage() {
         System.out.println(Messages.USAGE_HEADER);
         System.out.println(Messages.USAGE_INIT);
@@ -54,9 +54,10 @@ public final class OutputView {
         System.err.println(Messages.COMMIT_USAGE_ERROR);
     }
 
-    
+
     public void showStatus(StatusService.StatusResult result) {
-        boolean hasStaged = !(result.stagedAdded().isEmpty() && result.stagedModified().isEmpty() && result.stagedDeleted().isEmpty());
+        boolean hasStaged = !(result.stagedAdded().isEmpty() && result.stagedModified().isEmpty()
+                && result.stagedDeleted().isEmpty());
         boolean hasNotStaged = !(result.modifiedNotStaged().isEmpty() && result.deletedNotStaged().isEmpty());
         boolean hasUntracked = !result.untracked().isEmpty();
         if (!hasStaged && !hasNotStaged && !hasUntracked) {
@@ -65,15 +66,20 @@ public final class OutputView {
         }
         if (hasStaged) {
             System.out.println(Messages.STATUS_SECTION_STAGED);
-            result.stagedAdded().keySet().forEach(path -> System.out.println(Messages.STATUS_INDENT + path + " " + Messages.STATUS_STAGED_ADDED));
-            result.stagedModified().keySet().forEach(path -> System.out.println(Messages.STATUS_INDENT + path + " " + Messages.STATUS_STAGED_MODIFIED));
-            result.stagedDeleted().forEach(path -> System.out.println(Messages.STATUS_INDENT + path + " " + Messages.STATUS_STAGED_DELETED));
+            result.stagedAdded().keySet().forEach(
+                    path -> System.out.println(Messages.STATUS_INDENT + path + " " + Messages.STATUS_STAGED_ADDED));
+            result.stagedModified().keySet().forEach(
+                    path -> System.out.println(Messages.STATUS_INDENT + path + " " + Messages.STATUS_STAGED_MODIFIED));
+            result.stagedDeleted().forEach(
+                    path -> System.out.println(Messages.STATUS_INDENT + path + " " + Messages.STATUS_STAGED_DELETED));
             System.out.println();
         }
         if (hasNotStaged) {
             System.out.println(Messages.STATUS_SECTION_NOT_STAGED);
-            result.modifiedNotStaged().forEach(path -> System.out.println(Messages.STATUS_INDENT + Messages.STATUS_LABEL_MODIFIED + path));
-            result.deletedNotStaged().forEach(path -> System.out.println(Messages.STATUS_INDENT + Messages.STATUS_LABEL_DELETED + path));
+            result.modifiedNotStaged().forEach(
+                    path -> System.out.println(Messages.STATUS_INDENT + Messages.STATUS_LABEL_MODIFIED + path));
+            result.deletedNotStaged()
+                    .forEach(path -> System.out.println(Messages.STATUS_INDENT + Messages.STATUS_LABEL_DELETED + path));
             System.out.println();
         }
         if (hasUntracked) {
@@ -114,7 +120,7 @@ public final class OutputView {
         System.err.println(Messages.CHECKOUT_NOT_FOUND + branch);
     }
 
-    
+
     public void showMergeUsage() {
         System.out.println(Messages.MERGE_USAGE);
     }
@@ -135,61 +141,74 @@ public final class OutputView {
         System.err.println(Messages.MERGE_NOT_FAST_FORWARD);
     }
 
-    
+
     public void showPushUsage() {
         System.out.println(Messages.PUSH_USAGE);
     }
+
     public void showPushSuccess(String branch) {
         System.out.println(Messages.PUSH_SUCCESS + branch);
     }
+
     public void showPushUpToDate() {
         System.out.println(Messages.PUSH_UP_TO_DATE);
     }
+
     public void showPushRejectedNonFastForward() {
         System.err.println(Messages.PUSH_REJECTED_NON_FF);
     }
+
     public void showPushLocalNoCommits() {
         System.err.println(Messages.PUSH_LOCAL_NO_COMMITS);
     }
 
-    
+
     public void showPullUsage() {
         System.out.println(Messages.PULL_USAGE);
     }
+
     public void showPullSuccess(String branch) {
         System.out.println(Messages.PULL_SUCCESS + branch);
     }
+
     public void showPullUpToDate() {
         System.out.println(Messages.PULL_UP_TO_DATE);
     }
+
     public void showPullRemoteNoCommits() {
         System.out.println(Messages.PULL_REMOTE_NO_COMMITS);
     }
+
     public void showPullNotFastForward() {
         System.err.println(Messages.PULL_NOT_FAST_FORWARD);
     }
 
-    
+
     public void showCloneUsage() {
         System.out.println(Messages.CLONE_USAGE);
     }
+
     public void showCloneSuccess(String targetDir) {
         System.out.println(Messages.CLONE_SUCCESS + targetDir);
     }
+
     public void showCloneRemoteNotFound(String remoteDir) {
         System.err.println(Messages.CLONE_REMOTE_NOT_FOUND + remoteDir);
     }
+
     public void showCloneTargetExists(String targetDir) {
         System.err.println(Messages.CLONE_TARGET_EXISTS + targetDir);
     }
+
     public void showCloneRemoteNoCommits() {
         System.err.println(Messages.CLONE_REMOTE_NO_COMMITS);
     }
 
-    
+
     public void showServeHttpUsage() {
         System.out.println(Messages.SERVE_HTTP_USAGE);
     }
+
     public void showServeHttpStarted(int port) {
         System.out.println(Messages.SERVE_HTTP_STARTED + port);
     }
@@ -197,15 +216,19 @@ public final class OutputView {
     public void showPushHttpUsage() {
         System.out.println(Messages.PUSH_HTTP_USAGE);
     }
+
     public void showPushHttpSuccess(String branch) {
         System.out.println(Messages.PUSH_HTTP_SUCCESS + branch);
     }
+
     public void showPushHttpUpToDate() {
         System.out.println(Messages.PUSH_HTTP_UP_TO_DATE);
     }
+
     public void showPushHttpRejectedNonFastForward() {
         System.err.println(Messages.PUSH_HTTP_REJECTED_NON_FF);
     }
+
     public void showPushHttpLocalNoCommits() {
         System.err.println(Messages.PUSH_HTTP_LOCAL_NO_COMMITS);
     }
@@ -213,19 +236,23 @@ public final class OutputView {
     public void showPullHttpUsage() {
         System.out.println(Messages.PULL_HTTP_USAGE);
     }
+
     public void showPullHttpSuccess(String branch) {
         System.out.println(Messages.PULL_HTTP_SUCCESS + branch);
     }
+
     public void showPullHttpUpToDate() {
         System.out.println(Messages.PULL_HTTP_UP_TO_DATE);
     }
+
     public void showPullHttpRemoteNoCommits() {
         System.out.println(Messages.PULL_HTTP_REMOTE_NO_COMMITS);
     }
+
     public void showPullHttpNotFastForward() {
         System.err.println(Messages.PULL_HTTP_NOT_FAST_FORWARD);
     }
-    
+
     public void showLog(java.util.List<LogService.LogEntry> entries) {
         if (entries == null || entries.isEmpty()) {
             System.out.println(Messages.LOG_NO_COMMITS);

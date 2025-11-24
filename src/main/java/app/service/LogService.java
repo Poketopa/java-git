@@ -3,7 +3,6 @@ package app.service;
 import app.exception.ErrorCode;
 import app.repository.ObjectReader;
 import app.repository.RefRepository;
-
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -13,31 +12,26 @@ import java.util.List;
 import java.util.Objects;
 
 
-
-
 public final class LogService {
-    public record LogEntry(String hash, String author, String dateTimeIso, String message) { }
-
     private static final DateTimeFormatter ISO_FORMATTER =
             DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault());
-
     private final RefRepository refRepository;
     private final ObjectReader objectReader;
-
     public LogService(RefRepository refRepository, ObjectReader objectReader) {
         this.refRepository = Objects.requireNonNull(refRepository, "refRepository");
         this.objectReader = Objects.requireNonNull(objectReader, "objectReader");
     }
 
     public List<LogEntry> list() {
-        
+
         String branch = refRepository.readCurrentBranch();
         String commitHash = refRepository.readBranchHead(branch);
         List<LogEntry> entries = new ArrayList<>();
-        
+
         while (commitHash != null && !commitHash.isBlank()) {
             CommitParsed parsed = parseCommitContent(objectReader.readRaw(commitHash));
-            String dateIso = parsed.dateMillis != null ? ISO_FORMATTER.format(Instant.ofEpochMilli(parsed.dateMillis)) : "";
+            String dateIso =
+                    parsed.dateMillis != null ? ISO_FORMATTER.format(Instant.ofEpochMilli(parsed.dateMillis)) : "";
             String messageFirstLine = firstLine(parsed.message);
             entries.add(new LogEntry(commitHash, parsed.author, dateIso, messageFirstLine));
             commitHash = parsed.parentHash;
@@ -45,7 +39,6 @@ public final class LogService {
         return List.copyOf(entries);
     }
 
-    
     private String firstLine(String message) {
         if (message == null || message.isBlank()) {
             return "";
@@ -57,23 +50,6 @@ public final class LogService {
         return message.substring(0, index);
     }
 
-    private static final class CommitParsed {
-        final String treeSha;
-        final String parentHash;
-        final String author;
-        final Long dateMillis;
-        final String message;
-
-        CommitParsed(String treeSha, String parentHash, String author, Long dateMillis, String message) {
-            this.treeSha = treeSha;
-            this.parentHash = parentHash;
-            this.author = author;
-            this.dateMillis = dateMillis;
-            this.message = message;
-        }
-    }
-
-    
     private CommitParsed parseCommitContent(byte[] bytes) {
         if (bytes == null || bytes.length == 0) {
             throw new IllegalArgumentException(ErrorCode.MALFORMED_COMMIT_OBJECT.message());
@@ -122,5 +98,24 @@ public final class LogService {
             throw new IllegalArgumentException(ErrorCode.MALFORMED_COMMIT_OBJECT.message());
         }
         return new CommitParsed(treeSha, parentHash, author, dateMillis, messageBuilder.toString());
+    }
+
+    public record LogEntry(String hash, String author, String dateTimeIso, String message) {
+    }
+
+    private static final class CommitParsed {
+        final String treeSha;
+        final String parentHash;
+        final String author;
+        final Long dateMillis;
+        final String message;
+
+        CommitParsed(String treeSha, String parentHash, String author, Long dateMillis, String message) {
+            this.treeSha = treeSha;
+            this.parentHash = parentHash;
+            this.author = author;
+            this.dateMillis = dateMillis;
+            this.message = message;
+        }
     }
 }
