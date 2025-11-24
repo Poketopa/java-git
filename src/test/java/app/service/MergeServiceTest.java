@@ -35,7 +35,7 @@ class MergeServiceTest {
         when(refRepository.readBranchHead("main")).thenReturn("c1");
         when(refRepository.readBranchHead("feature")).thenReturn(null);
 
-        var result = mergeService.merge("feature");
+        MergeService.MergeResult result = mergeService.merge("feature");
 
         assertThat(result).isEqualTo(BRANCH_NOT_FOUND);
         verify(refRepository, never()).updateBranchHead(anyString(), anyString());
@@ -53,7 +53,7 @@ class MergeServiceTest {
         when(refRepository.readBranchHead("main")).thenReturn(null);
         when(refRepository.readBranchHead("feature")).thenReturn("t1");
 
-        var result = mergeService.merge("feature");
+        MergeService.MergeResult result = mergeService.merge("feature");
 
         assertThat(result).isEqualTo(FAST_FORWARD);
         verify(refRepository).updateBranchHead("main", "t1");
@@ -71,7 +71,7 @@ class MergeServiceTest {
         when(refRepository.readBranchHead("main")).thenReturn("c1");
         when(refRepository.readBranchHead("feature")).thenReturn("c1");
 
-        var result = mergeService.merge("feature");
+        MergeService.MergeResult result = mergeService.merge("feature");
 
         assertThat(result).isEqualTo(ALREADY_UP_TO_DATE);
         verify(refRepository, never()).updateBranchHead(anyString(), anyString());
@@ -111,7 +111,7 @@ class MergeServiceTest {
                         "msg").getBytes(java.nio.charset.StandardCharsets.UTF_8)
         );
 
-        var result = mergeService.merge("feature");
+        MergeService.MergeResult result = mergeService.merge("feature");
 
         assertThat(result).isEqualTo(FAST_FORWARD);
         verify(refRepository).updateBranchHead("main", "c3");
@@ -147,7 +147,7 @@ class MergeServiceTest {
                         "msg").getBytes(java.nio.charset.StandardCharsets.UTF_8)
         );
 
-        var result = mergeService.merge("feature");
+        MergeService.MergeResult result = mergeService.merge("feature");
 
         assertThat(result).isEqualTo(NOT_FAST_FORWARD);
         verify(refRepository, never()).updateBranchHead(anyString(), anyString());
