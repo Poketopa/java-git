@@ -129,6 +129,3 @@ public final class FileRefRepository implements RefRepository {
         return refsHeadsDirectoryPath.resolve(branchName);
     }
 }
-
-
-

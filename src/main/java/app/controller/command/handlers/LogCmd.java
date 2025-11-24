@@ -18,8 +18,3 @@ public final class LogCmd {
         outputView.showLog(logService.list());
     }
 }
-
-
-
-
-

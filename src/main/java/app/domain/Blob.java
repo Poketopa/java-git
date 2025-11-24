@@ -32,5 +32,3 @@ public final class Blob {
         return Arrays.copyOf(file, file.length);
     }
 }
-
-

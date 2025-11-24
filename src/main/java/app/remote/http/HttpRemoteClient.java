@@ -155,5 +155,3 @@ public final class HttpRemoteClient {
         return map;
     }
 }
-
-

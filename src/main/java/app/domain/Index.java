@@ -47,5 +47,3 @@ public final class Index {
         return stagedFiles;
     }
 }
-
-

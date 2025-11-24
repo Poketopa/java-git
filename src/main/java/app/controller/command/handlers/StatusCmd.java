@@ -19,8 +19,3 @@ public final class StatusCmd {
         view.showStatus(statusService.status());
     }
 }
-
-
-
-
-

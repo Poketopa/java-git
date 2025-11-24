@@ -124,5 +124,3 @@ public final class LogService {
         return new CommitParsed(treeSha, parentHash, author, dateMillis, messageBuilder.toString());
     }
 }
-
-

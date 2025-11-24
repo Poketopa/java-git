@@ -70,5 +70,3 @@ class CommitTest {
                 .hasMessage(ErrorCode.COMMIT_AUTHOR_EMPTY.message());
     }
 }
-
-

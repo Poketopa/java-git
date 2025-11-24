@@ -19,8 +19,3 @@ public final class InitCmd {
         outputView.showInitSuccess();
     }
 }
-
-
-
-
-

@@ -16,8 +16,3 @@ public final class InitService {
         fileSystemInitService.initRepository(rootDirectoryPath);
     }
 }
-
-
-
-
-

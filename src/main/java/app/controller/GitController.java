@@ -202,6 +202,3 @@ public final class GitController {
         outputView.showUsage();
     }
 }
-
-
-

@@ -34,5 +34,3 @@ public final class CheckoutService {
         return CheckoutResult.SUCCESS;
     }
 }
-
-

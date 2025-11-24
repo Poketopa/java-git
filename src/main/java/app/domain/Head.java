@@ -23,6 +23,3 @@ public final class Head {
         return refName;
     }
 }
-
-
-

@@ -10,5 +10,3 @@ public interface ObjectReader {
     Tree readTree(String objectId);
     Commit readCommit(String objectId);
 }
-
-

@@ -79,5 +79,3 @@ class IndexTest {
                 .hasMessage(ErrorCode.INDEX_STAGED_FILE_OID_NULL.message());
     }
 }
-
-

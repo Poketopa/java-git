@@ -26,8 +26,3 @@ public final class AddCmd {
         outputView.showAddedToIndex(filePaths.size());
     }
 }
-
-
-
-
-

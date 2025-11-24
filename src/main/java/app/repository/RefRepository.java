@@ -8,6 +8,3 @@ public interface RefRepository {
     void createBranch(String branchName, String baseCommitSha);
     void updateCurrentBranch(String branchName);
 }
-
-
-

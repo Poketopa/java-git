@@ -119,5 +119,3 @@ public final class Appconfig {
         return new HttpPullService(refRepository, objectReader, rootDirectoryPath);
     }
 }
-
-

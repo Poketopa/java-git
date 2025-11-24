@@ -153,5 +153,3 @@ class MergeServiceTest {
         verify(refRepository, never()).updateBranchHead(anyString(), anyString());
     }
 }
-
-

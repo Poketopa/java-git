@@ -154,5 +154,3 @@ public final class FileObjectReader implements ObjectReader {
         return new ParsedCommit(treeSha, parentHash, author, messageBuilder.toString());
     }
 }
-
-

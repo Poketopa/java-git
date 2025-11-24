@@ -68,6 +68,3 @@ public final class Commit {
         return createdAtMillis;
     }
 }
-
-
-
