@@ -13,11 +13,11 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 
-// 커밋 생성 플로우
-// - Index 스냅샷으로 Tree 작성 → Tree 저장
-// - HEAD가 가리키는 부모 커밋 조회
-// - Commit 작성 및 저장 → HEAD 업데이트
-// - 커밋 완료 후 Index 비우기
+
+
+
+
+
 public final class CommitService {
     private final IndexRepository indexRepository;
     private final ObjectWriter objectWriter;
@@ -32,26 +32,26 @@ public final class CommitService {
     }
 
     public void commit(String message, String author) {
-        // 1) 입력 검증
+        
         validate(message, author);
-        // 2) 스테이징된 파일 존재 확인
+        
         Index index = indexRepository.read();
         ensureHasStagedFiles(index);
-        // 3) Tree 작성 및 저장
+        
         Tree tree = new Tree(index.stagedFiles());
         String treeHash = writeTree(tree);
-        // 4) 부모 커밋 조회
+        
         String parentCommitHash = readCurrentHeadCommit();
-        // 5) Commit 작성 및 저장
+        
         String commitHash = writeCommit(new Commit(message, treeHash, emptyToNull(parentCommitHash), author));
-        // 6) HEAD 업데이트
+        
         updateHead(commitHash);
-        // 7) Index 초기화
-        // 7) Index 초기화 (제거: Index는 커밋 후에도 유지되어야 함)
-        // clearIndex();
+        
+        
+        
     }
 
-    // 커밋 메시지/작성자 필수값 검증
+    
     private void validate(String message, String author) {
         if (message == null || message.isBlank()) {
             throw new IllegalArgumentException(ErrorCode.COMMIT_MESSAGE_EMPTY.message());
@@ -61,7 +61,7 @@ public final class CommitService {
         }
     }
 
-    // 스테이징된 파일이 없으면 커밋 불가
+    
     private void ensureHasStagedFiles(Index index) {
         Map<String, String> stagedFiles = index.stagedFiles();
         if (stagedFiles == null || stagedFiles.isEmpty()) {
@@ -74,8 +74,8 @@ public final class CommitService {
         return objectWriter.write(treeContent);
     }
 
-    // Tree 직렬화 포맷
-    // - "blob <sha> <path>\n" 라인 반복
+    
+    
     private String buildTreeContent(Tree tree) {
         StringBuilder contentBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : tree.entries().entrySet()) {
@@ -88,7 +88,7 @@ public final class CommitService {
         contentBuilder.append("blob ").append(entry.getValue()).append(' ').append(entry.getKey()).append('\n');
     }
 
-    // 현재 브랜치의 HEAD 커밋 해시 조회 (없으면 빈 문자열)
+    
     private String readCurrentHeadCommit() {
         String branch = refRepository.readCurrentBranch();
         return refRepository.readBranchHead(branch);
@@ -99,9 +99,9 @@ public final class CommitService {
         return objectWriter.write(commitContent);
     }
 
-    // Commit 직렬화 포맷
-    // - 헤더: tree/parent/author/date
-    // - 빈 줄 후 메시지
+    
+    
+    
     private String buildCommitContent(Commit commit) {
         StringBuilder contentBuilder = new StringBuilder();
         contentBuilder.append("tree ").append(commit.treeOid()).append('\n');

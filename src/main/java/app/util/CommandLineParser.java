@@ -8,8 +8,8 @@ public final class CommandLineParser {
     private CommandLineParser() {
     }
 
-    // 옵션 값 조회
-    // 예: args=["commit","-m","msg","-a","me"], option="-m" → "msg"
+    
+    
     public static String findOptionValue(String[] args, String option) {
         if (args == null || option == null) {
             return null;
@@ -22,8 +22,8 @@ public final class CommandLineParser {
         return null;
     }
 
-    // 첫 토큰(명령어)을 제외한 나머지를 path 리스트로 추출
-    // 예: ["add","a.txt","b.txt"] → ["a.txt","b.txt"]
+    
+    
     public static List<String> extractPaths(String[] args) {
         if (args == null || args.length <= 1) {
             return List.of();

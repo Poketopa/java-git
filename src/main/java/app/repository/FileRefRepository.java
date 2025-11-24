@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-// Ref git에서 특정 커밋을 가리키는 포인터
-// HEAD → refs/heads/master → a1b2c3d4...
+
+
 public final class FileRefRepository implements RefRepository {
     private static final String DOT_JAVA_GIT = ".javaGit";
     private static final String REFS = "refs";
@@ -24,9 +24,9 @@ public final class FileRefRepository implements RefRepository {
         this.rootDirectoryPath = Objects.requireNonNull(rootDirectoryPath, "rootDirectoryPath");
     }
 
-    // .javaGit/HEAD 헤드 파일 경로 ㅅ애성
-    // 파일 읽기
-    // resole -> 경로 합치기
+    
+    
+    
     @Override
     public String readCurrentBranch() {
         Path headFilePath = rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(HEAD);
@@ -38,8 +38,8 @@ public final class FileRefRepository implements RefRepository {
         }
     }
 
-    // 커밋이 누구를 가르키는지 리턴
-    // ref: refs/heads/master 인 경우 master 리턴
+    
+    
     private String parseBranchName(String headContent) {
         if (headContent == null || headContent.isBlank()) {
             throw new IllegalArgumentException(ErrorCode.HEAD_REF_EMPTY.message());
@@ -50,7 +50,7 @@ public final class FileRefRepository implements RefRepository {
         return headContent.substring(REF_PREFIX.length());
     }
 
-    // 헤드를 리턴함, 부모가 없을 경우 (첫 커밋일 경우) 빈 문자열 리턴
+    
     @Override
     public String readBranchHead(String branchName) {
         Path branchFilePath = branchFilePath(branchName);
@@ -64,7 +64,7 @@ public final class FileRefRepository implements RefRepository {
         }
     }
 
-    // 현재 바라보고 있는 커밋을 heads/master 로 설정
+    
     @Override
     public void updateBranchHead(String branchName, String commitSha) {
         Path branchFilePath = branchFilePath(branchName);

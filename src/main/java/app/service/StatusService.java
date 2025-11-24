@@ -24,10 +24,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.HexFormat;
 
-// 작업 트리(Working) ↔ Index ↔ HEAD(Tree) 3-way 비교
-// - 스테이징된 추가/수정/삭제
-// - 아직 스테이징되지 않은 수정/삭제
-// - Untracked 파일
+
+
+
+
 public final class StatusService {
     public record StatusResult(
             Map<String, String> stagedAdded,
@@ -51,12 +51,12 @@ public final class StatusService {
     }
 
     public StatusResult status() {
-        // 1) 현재 스냅샷 수집
+        
         Map<String, String> working = scanWorkingTree();
         Map<String, String> index = indexRepository.read().stagedFiles();
         Map<String, String> headTree = readHeadTreeSnapshot();
 
-        // 2) Index 기준으로 Staged Added/Modified/Deleted 계산
+        
         Map<String, String> stagedAdded = new LinkedHashMap<>();
         Map<String, String> stagedModified = new LinkedHashMap<>();
         Set<String> stagedDeleted = new LinkedHashSet<>();
@@ -77,7 +77,7 @@ public final class StatusService {
             }
         }
 
-        // 3) Working ↔ Index 비교로 Not Staged(수정/삭제) 계산
+        
         Set<String> modifiedNotStaged = new LinkedHashSet<>();
         Set<String> deletedNotStaged = new LinkedHashSet<>();
         for (Map.Entry<String, String> e : index.entrySet()) {
@@ -93,7 +93,7 @@ public final class StatusService {
             }
         }
 
-        // 4) Untracked 파일 계산 (Working에만 존재)
+        
         Set<String> untracked = new LinkedHashSet<>();
         for (String path : working.keySet()) {
             if (!index.containsKey(path)) {
@@ -111,8 +111,8 @@ public final class StatusService {
         );
     }
 
-    // HEAD 커밋의 Tree 스냅샷을 Map 형태로 반환
-    // - 초기 상태(부모 없음)면 빈 Map
+    
+    
     private Map<String, String> readHeadTreeSnapshot() {
         String branch = refRepository.readCurrentBranch();
         String headCommitHash = refRepository.readBranchHead(branch);
@@ -124,8 +124,8 @@ public final class StatusService {
         return tree.entries();
     }
 
-    // 워킹 트리를 순회하며 파일별 SHA-1을 계산
-    // - .javaGit 디렉토리는 제외
+    
+    
     private Map<String, String> scanWorkingTree() {
         Map<String, String> map = new LinkedHashMap<>();
         try {
@@ -162,7 +162,7 @@ public final class StatusService {
         return map;
     }
 
-    // SHA-1 해시 계산
+    
     private String sha1(byte[] content) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-1");

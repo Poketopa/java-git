@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 
-// HTTP Remote Push (FF-only, 투박한 전송)
+
 public final class HttpPushService {
     public enum Result {
         SUCCESS,
@@ -48,7 +48,7 @@ public final class HttpPushService {
             return Result.REMOTE_REJECTED_NON_FF;
         }
 
-        // 투박한 방식: 원격 목록을 받아 없는 OID만 업로드
+        
         java.util.Set<String> remoteObjects = remote.listObjects();
         Path objectsDir = localRoot.resolve(DOT_JAVA_GIT).resolve(OBJECTS);
         if (Files.exists(objectsDir)) {
@@ -108,6 +108,7 @@ public final class HttpPushService {
         return null;
     }
 }
+
 
 
 

@@ -4,7 +4,7 @@ import app.service.StatusService;
 import app.service.LogService;
 
 public final class OutputView {
-    // REPL 안내/프롬프트/종료/에러 출력
+    
     public void showWelcome() {
         System.out.println(Messages.REPL_WELCOME);
     }
@@ -26,7 +26,7 @@ public final class OutputView {
         System.err.println(Messages.REPL_INPUT_READ_ERROR + detail);
     }
 
-    // 사용법 출력
+    
     public void showUsage() {
         System.out.println(Messages.USAGE_HEADER);
         System.out.println(Messages.USAGE_INIT);
@@ -54,7 +54,7 @@ public final class OutputView {
         System.err.println(Messages.COMMIT_USAGE_ERROR);
     }
 
-    // status 출력 포맷팅
+    
     public void showStatus(StatusService.StatusResult result) {
         boolean hasStaged = !(result.stagedAdded().isEmpty() && result.stagedModified().isEmpty() && result.stagedDeleted().isEmpty());
         boolean hasNotStaged = !(result.modifiedNotStaged().isEmpty() && result.deletedNotStaged().isEmpty());
@@ -114,7 +114,7 @@ public final class OutputView {
         System.err.println(Messages.CHECKOUT_NOT_FOUND + branch);
     }
 
-    // merge 출력
+    
     public void showMergeUsage() {
         System.out.println(Messages.MERGE_USAGE);
     }
@@ -135,7 +135,7 @@ public final class OutputView {
         System.err.println(Messages.MERGE_NOT_FAST_FORWARD);
     }
 
-    // push
+    
     public void showPushUsage() {
         System.out.println(Messages.PUSH_USAGE);
     }
@@ -152,7 +152,7 @@ public final class OutputView {
         System.err.println(Messages.PUSH_LOCAL_NO_COMMITS);
     }
 
-    // pull
+    
     public void showPullUsage() {
         System.out.println(Messages.PULL_USAGE);
     }
@@ -169,7 +169,7 @@ public final class OutputView {
         System.err.println(Messages.PULL_NOT_FAST_FORWARD);
     }
 
-    // clone
+    
     public void showCloneUsage() {
         System.out.println(Messages.CLONE_USAGE);
     }
@@ -186,7 +186,7 @@ public final class OutputView {
         System.err.println(Messages.CLONE_REMOTE_NO_COMMITS);
     }
 
-    // http remote
+    
     public void showServeHttpUsage() {
         System.out.println(Messages.SERVE_HTTP_USAGE);
     }
@@ -225,7 +225,7 @@ public final class OutputView {
     public void showPullHttpNotFastForward() {
         System.err.println(Messages.PULL_HTTP_NOT_FAST_FORWARD);
     }
-    // log 출력 포맷팅 (요약)
+    
     public void showLog(java.util.List<LogService.LogEntry> entries) {
         if (entries == null || entries.isEmpty()) {
             System.out.println(Messages.LOG_NO_COMMITS);

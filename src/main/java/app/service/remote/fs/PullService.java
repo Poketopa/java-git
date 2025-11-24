@@ -7,8 +7,8 @@ import app.repository.RefRepository;
 import java.nio.file.Path;
 import java.util.Objects;
 
-// 원격(디렉토리) → 로컬로 풀 (Fast-forward만)
-// - 투박한 버전: 원격 모든 objects를 로컬로 복사 후, FF 검증되면 브랜치 HEAD 갱신
+
+
 public final class PullService {
     public enum PullResult {
         SUCCESS,
@@ -41,10 +41,10 @@ public final class PullService {
             return PullResult.ALREADY_UP_TO_DATE;
         }
 
-        // 투박한 방식: 원격 모든 objects를 로컬로 복사
+        
         remote.copyAllRemoteObjectsToLocal(localRoot);
 
-        // FF 가능한지 확인: localHead가 remoteHead의 조상인가?
+        
         if (localHead == null || localHead.isBlank() || isAncestor(localHead, remoteHead)) {
             localRefRepository.updateBranchHead(branch, remoteHead);
             return PullResult.SUCCESS;
@@ -79,6 +79,7 @@ public final class PullService {
         return null;
     }
 }
+
 
 
 

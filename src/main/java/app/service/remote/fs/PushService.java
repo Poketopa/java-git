@@ -7,8 +7,8 @@ import app.repository.RefRepository;
 import java.nio.file.Path;
 import java.util.Objects;
 
-// 로컬 → 원격(디렉토리)으로 푸시 (Fast-forward만)
-// - 투박한 버전: 모든 로컬 objects를 원격으로 복사 후, FF 검증 시 브랜치 HEAD 갱신
+
+
 public final class PushService {
     public enum PushResult {
         SUCCESS,
@@ -47,7 +47,7 @@ public final class PushService {
             }
         }
 
-        // 투박한 방식: 로컬 모든 objects를 원격으로 복사
+        
         remote.copyAllLocalObjectsToRemote(localRoot);
         remote.updateBranchHead(branch, localHead);
         return PushResult.SUCCESS;
@@ -80,6 +80,7 @@ public final class PushService {
         return null;
     }
 }
+
 
 
 

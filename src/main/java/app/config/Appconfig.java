@@ -28,8 +28,8 @@ import app.service.remote.http.HttpPullService;
 import java.nio.file.Path;
 import java.util.Objects;
 
-// 수동 DI 구성
-// - Repository / Service 인스턴스 생성 및 주입
+
+
 public final class Appconfig {
     private final Path rootDirectoryPath;
 

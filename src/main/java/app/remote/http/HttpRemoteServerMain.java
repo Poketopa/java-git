@@ -3,7 +3,7 @@ package app.remote.http;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-// 간단 실행용: 현재 디렉터리를 원격 루트로 하여 HTTP 서버 실행
+
 public final class HttpRemoteServerMain {
     public static void main(String[] args) {
         if (args == null || args.length != 1) {
@@ -21,13 +21,14 @@ public final class HttpRemoteServerMain {
         HttpRemoteServer server = new HttpRemoteServer(root);
         server.start(port);
         System.out.println("HTTP 원격 서버 시작: 포트=" + port + " 루트=" + root);
-        // 블로킹 유지
+        
         try {
             Thread.currentThread().join();
         } catch (InterruptedException ignored) {
         }
     }
 }
+
 
 
 

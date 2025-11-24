@@ -26,7 +26,7 @@ public final class CheckoutService {
         StatusService.StatusResult status = statusService.status();
         boolean hasStagedChanges = !(status.stagedAdded().isEmpty() && status.stagedModified().isEmpty() && status.stagedDeleted().isEmpty());
         boolean hasWorkingModifications = !(status.modifiedNotStaged().isEmpty() && status.deletedNotStaged().isEmpty());
-        // Untracked 파일은 checkout을 막지 않음(충돌 검사는 후속 단계에서 확장)
+        
         if (hasStagedChanges || hasWorkingModifications) {
             return CheckoutResult.WORKING_TREE_NOT_CLEAN;
         }

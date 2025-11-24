@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 
-// HTTP Remote Pull (FF-only, 투박한 전송)
+
 public final class HttpPullService {
     public enum Result {
         SUCCESS,
@@ -126,6 +126,7 @@ public final class HttpPullService {
         return null;
     }
 }
+
 
 
 

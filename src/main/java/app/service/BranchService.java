@@ -5,9 +5,9 @@ import app.repository.RefRepository;
 import java.util.List;
 import java.util.Objects;
 
-// 브랜치 조회/생성
-// - list(): refs/heads/* 목록
-// - create(): 현재 브랜치 HEAD를 기준으로 신규 브랜치 생성
+
+
+
 public final class BranchService {
     private final RefRepository refRepository;
 
@@ -26,7 +26,7 @@ public final class BranchService {
         refRepository.createBranch(branchName, base);
     }
 
-    // 브랜치 이름 간단 검증 (공백/슬래시 금지)
+    
     private void validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("[ERROR] 브랜치 이름이 비어 있습니다.");

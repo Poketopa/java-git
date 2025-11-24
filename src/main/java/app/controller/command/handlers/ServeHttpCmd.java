@@ -32,7 +32,7 @@ public final class ServeHttpCmd {
         HttpRemoteServer server = new HttpRemoteServer(Paths.get(System.getProperty(USER_DIR_PROPERTY)));
         server.start(port);
         outputView.showServeHttpStarted(port);
-        // Keep running
+        
         try {
             Thread.currentThread().join();
         } catch (InterruptedException e) {

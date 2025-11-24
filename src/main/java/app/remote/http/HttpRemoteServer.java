@@ -24,13 +24,13 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Objects;
 
-// Minimal HTTP Remote Server
-// - GET  /refs                       → plain text: "HEAD <branch>\nref <branch> <sha>\n..."
-// - GET  /objects                    → plain text: "<oid>\n" list
-// - HEAD /objects/{oid}              → 200 if exists, 404 otherwise
-// - GET  /objects/{oid}              → raw bytes
-// - POST /objects/{oid}              → raw bytes (idempotent)
-// - POST /update-ref                 → plain body: "branch <name>\nold <oldsha>\nnew <newsha>\n"
+
+
+
+
+
+
+
 public final class HttpRemoteServer {
     private static final String DOT_JAVA_GIT = ".javaGit";
     private static final String OBJECTS = "objects";
@@ -183,7 +183,7 @@ public final class HttpRemoteServer {
 
         private void handlePost(HttpExchange exchange, String oid) throws IOException {
             byte[] bytes = exchange.getRequestBody().readAllBytes();
-            // 무결성 검증: 바이트 SHA-1이 경로 OID와 일치해야 함
+            
             if (!oidEqualsContentHash(oid, bytes)) {
                 exchange.sendResponseHeaders(400, -1);
                 return;
@@ -243,7 +243,7 @@ public final class HttpRemoteServer {
                 exchange.sendResponseHeaders(409, -1);
                 return;
             }
-            // 검증: 새 커밋이 존재해야 함
+            
             try {
                 if (newSha != null && !newSha.isBlank()) {
                     objectReader.readRaw(newSha);

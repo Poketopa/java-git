@@ -75,7 +75,7 @@ public final class FileObjectReader implements ObjectReader {
             if (line == null || line.isBlank()) {
                 continue;
             }
-            // "blob <sha> <path>"
+            
             int firstSpace = line.indexOf(' ');
             if (firstSpace <= 0) {
                 throw new IllegalArgumentException(ErrorCode.MALFORMED_TREE_OBJECT.message());
@@ -121,7 +121,7 @@ public final class FileObjectReader implements ObjectReader {
         for (; i < lines.length; i++) {
             String line = lines[i];
             if (line == null || line.isBlank()) {
-                i++; // skip blank line
+                i++; 
                 break;
             }
             if (line.startsWith("tree ")) {
@@ -137,7 +137,7 @@ public final class FileObjectReader implements ObjectReader {
                 continue;
             }
             if (line.startsWith("date ")) {
-                // createdAtMillis는 Commit 생성자에서 현재시간으로 세팅되므로 여기서는 소비만 함
+                
                 continue;
             }
         }

@@ -12,20 +12,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-// Index를 파일로 저장 / 읽기
+
 
 public final class FileIndexRepository implements IndexRepository {
     private static final String DOT_JAVA_GIT = ".javaGit";
     private static final String INDEX = "index";
-    // 저장소 루트 (DI로 주입됨)
+    
     private final Path rootDirectoryPath;
 
     public FileIndexRepository(Path rootDirectoryPath) {
         this.rootDirectoryPath = Objects.requireNonNull(rootDirectoryPath, "rootDirectoryPath");
     }
 
-    // Index 폴더의 파일들을 읽는다
-    // 존재하지 않으면 빈 Index를 반환
+    
+    
     @Override
     public Index read() {
         Path indexFilePath = getIndexFilePath();
@@ -35,9 +35,9 @@ public final class FileIndexRepository implements IndexRepository {
         return readIndexFile(indexFilePath);
     }
 
-    // index 폴더 없으면 생성, 있으면 파일 저장
-    // my-project/.javaGit/index
-    // 저장 문자열 예시: a1b2c3d4e5f6... src/Main.java
+    
+    
+    
     @Override
     public void write(Index index) {
         Path indexFilePath = getIndexFilePath();
@@ -47,12 +47,12 @@ public final class FileIndexRepository implements IndexRepository {
         writeIndexFile(indexFilePath, indexContent);
     }
 
-    // Index 파일 경로를 생성한다
+    
     private Path getIndexFilePath() {
         return rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(INDEX);
     }
 
-    // Index 폴더 내용을 한줄 씩 읽고 String으로 파싱하여 Map으로 저장
+    
     private Index readIndexFile(Path indexFilePath) {
         try {
             List<String> indexFileLines = Files.readAllLines(indexFilePath, StandardCharsets.UTF_8);
@@ -63,7 +63,7 @@ public final class FileIndexRepository implements IndexRepository {
         }
     }
 
-    // 읽기
+    
     private Map<String, String> parseIndexLines(List<String> indexFileLines) {
         Map<String, String> stagedFilesMap = new LinkedHashMap<>();
         for (String line : indexFileLines) {
@@ -75,13 +75,13 @@ public final class FileIndexRepository implements IndexRepository {
         return stagedFilesMap;
     }
 
-    // 빈 라인 체크
+    
     private boolean isBlankLine(String line) {
         return line == null || line.isBlank();
     }
 
-    // 해시값과 파일 경로를 분리
-    // a1b2c3d4e5f6... src/Main.java
+    
+    
     private void parseIndexLine(String line, Map<String, String> stagedFilesMap) {
         int spaceIndex = line.indexOf(' ');
         if (spaceIndex <= 0) {

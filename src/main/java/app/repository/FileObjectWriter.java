@@ -30,7 +30,7 @@ public final class FileObjectWriter implements ObjectWriter {
         return objectHash;
     }
 
-    // 바이트 배열을 받고 해시값 생성
+    
     private String calculateSha1(byte[] objectContent) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
@@ -41,8 +41,8 @@ public final class FileObjectWriter implements ObjectWriter {
         }
     }
 
-    // 해시값을 받고 경로 생성
-    // /Users/lhs/my-project/.javaGit/objects/a1/b2c3d4e5f6789012345678901234567890abcd
+    
+    
     private Path buildObjectFilePath(String objectHash) {
         Path objectsDirectoryPath = rootDirectoryPath.resolve(DOT_JAVA_GIT).resolve(OBJECTS);
         String hashPrefix = objectHash.substring(0, SHA_PREFIX_LENGTH);
@@ -51,7 +51,7 @@ public final class FileObjectWriter implements ObjectWriter {
         return objectSubDirectoryPath.resolve(hashSuffix);
     }
 
-    // 해시값 앞의 2개 뜯어서 폴더 만들기
+    
     private void createObjectDirectory(Path objectDirectoryPath) {
         try {
             Files.createDirectories(objectDirectoryPath);
@@ -60,7 +60,7 @@ public final class FileObjectWriter implements ObjectWriter {
         }
     }
 
-    // 만들어진 해시값 2자리 폴더에 값 넣기
+    
     private void writeObjectFile(Path objectFilePath, byte[] objectContent) {
         if (Files.exists(objectFilePath)) {
             return;

@@ -13,9 +13,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.EnumSet;
 import java.util.Objects;
 
-// 매우 단순한 로컬 파일시스템 기반 "원격"
-// - 목적: push/pull 로직을 네트워크 없이 검증
-// - 기능: 원격 HEAD/refs 읽기/쓰기, objects 디렉토리 간 복사
+
+
+
 public final class FileRemoteClient {
     private static final String DOT_JAVA_GIT = ".javaGit";
     private static final String OBJECTS = "objects";

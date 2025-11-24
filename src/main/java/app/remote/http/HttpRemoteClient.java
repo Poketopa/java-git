@@ -11,8 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-// Minimal HTTP Remote Client
-// - 서버 규약은 HttpRemoteServer와 동일 (텍스트/바이너리)
+
+
 public final class HttpRemoteClient {
     private static final String CONTENT_TYPE_TEXT = "text/plain; charset=utf-8";
     private static final String CONTENT_TYPE_OCTET = "application/octet-stream";
