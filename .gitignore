@@ -32,3 +32,15 @@ bin/
 
 ### Reference ###
 reference/
+
+### Gradle & Build Outputs ###
+.gradle/
+build/
+
+### Local Binary Outputs ###
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### Local App Data ###
+.javaGit/
